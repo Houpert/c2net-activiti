@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class WebServiceActiviti {
 
-	@RequestMapping("/actinivi")
+	@RequestMapping("/activiti")
 	public String startProcess(@RequestParam(value="id") String id) {
 		
 		return id;

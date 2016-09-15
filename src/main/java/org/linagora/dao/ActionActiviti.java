@@ -1,6 +1,6 @@
 package org.linagora.dao;
 
-public enum Action {
+public enum ActionActiviti {
 
 	FORM_CREATE,
 	
