@@ -14,6 +14,9 @@ public class ActivitiBpmn {
 	public String getName() {
 		return name;
 	}
+	public String getBpmnName(){
+		return name+".bpmn20.xml";
+	}
 	public void setName(String name) {
 		this.name = name;
 	}

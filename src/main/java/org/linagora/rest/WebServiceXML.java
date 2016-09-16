@@ -28,8 +28,8 @@ public class WebServiceXML {
 			
 			if(activiti == null)
 				throw new ExceptionGeneratorActiviti("Unable to parse the xml to an activiti XML");
-
-			if(myActivitiGenerator.createBPMNFile(activiti))
+			
+			if(myActivitiGenerator.saveBPMNFile(activiti))
 				return activiti.getName();
 			else 
 				throw new ExceptionGeneratorActiviti("Error during the file creation");
