@@ -1,4 +1,4 @@
-package org.linagora.rest.exception;
+package org.linagora.dao.exception;
 
 public class ExceptionGeneratorActiviti extends Exception {
 

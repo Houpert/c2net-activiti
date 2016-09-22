@@ -1,4 +1,4 @@
-package org.linagora.services;
+package org.linagora.communicate;
 
 import org.linagora.dao.ActionActiviti;
 

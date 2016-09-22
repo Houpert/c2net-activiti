@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet version="1.0"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn">
+
+	<xsl:template match="bpmn:definitions">
+		<xsl:copy>
+			<xsl:copy-of select="@*" />
+		</xsl:copy>
+
+		<xsl:for-each select="bpmn:process">
+			<process>
+				<!--TODO Filter xmlns:camunda , xmlns:bpmndi , xmlns:bpmn-->
+				<xsl:copy-of select="@*" />
+				<xsl:for-each select="node()">
+					<xsl:copy>
+						<xsl:apply-templates select="@* | node()" />
+					</xsl:copy>
+				</xsl:for-each>
+
+			</process>
+		</xsl:for-each>
+
+	</xsl:template>
+
+</xsl:stylesheet>
+
+
+<!-- <xsl:apply-templates select="@*"/> -->
+<!-- bpmn:definitions <xsl:template match="*"> <xsl:copy> <xsl:apply-templates 
+	/> </xsl:copy> </xsl:template> <xsl:namespace-alias stylesheet-prefix="bpmn" 
+	result-prefix="bpmn" /> -->
+
+<!--<xsl:template match="/definitions"> <definitions> <xsl:copy-of select="@*" 
+	/> <xsl:apply-templates /> </definitions> </xsl:template> -->
+
+
+<!-- <xsl:template match="node() | @*"> <xsl:copy> <xsl:apply-templates select="@* 
+	| node()"/> </xsl:copy> </xsl:template> -->
+
+<!-- <xsl:template match="/"> <html> <body> <h2>My CD Collection</h2> <table 
+	border="1"> <tr> <td> <xsl:value-of select="/" /> </td> <td> <xsl:value-of 
+	select="." /> </td> <td> <xsl:value-of select="definitions" /> </td> <td> 
+	<xsl:value-of select="definitions/process/startEvent/outgoing" /> </td> </tr> 
+	</table> </body> </html> </xsl:template> -->

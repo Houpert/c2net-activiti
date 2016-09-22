@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+	xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+	xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="Definitions_1"
+	targetNamespace="http://bpmn.io/schema/bpmn" />
+<process xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+	xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
+	id="AddedAssignment.bpmn20" isExecutable="true">
+	<bpmn:startEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC">
+		StartEvent_17ogpec
+		SequenceFlow_0mtt35u
+	</bpmn:startEvent>
+	<bpmn:sequenceFlow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC">
+		SequenceFlow_0mtt35uStartEvent_17ogpecUserTask_057uj12
+	</bpmn:sequenceFlow>
+	<bpmn:exclusiveGateway xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC">
+		ExclusiveGateway_1av5f34
+		SequenceFlow_1ethzhq
+		SequenceFlow_0jikhv0
+		SequenceFlow_0vfosfz
+	</bpmn:exclusiveGateway>
+	<bpmn:sequenceFlow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC">
+		SequenceFlow_1ethzhqUserTask_057uj12ExclusiveGateway_1av5f34
+	</bpmn:sequenceFlow>
+	<bpmn:sequenceFlow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC">
+		SequenceFlow_0jikhv0ExclusiveGateway_1av5f34ManualTask_0rb861e
+	</bpmn:sequenceFlow>
+	<bpmn:endEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC">
+		EndEvent_1hh4g76
+		SequenceFlow_1rxtg0e
+	</bpmn:endEvent>
+	<bpmn:sequenceFlow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC">
+		SequenceFlow_1rxtg0eManualTask_0rb861eEndEvent_1hh4g76
+	</bpmn:sequenceFlow>
+	<bpmn:sequenceFlow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC">
+		SequenceFlow_0vfosfzExclusiveGateway_1av5f34UserTask_101a4l5
+	</bpmn:sequenceFlow>
+	<bpmn:endEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC">
+		EndEvent_10gf7v0
+		SequenceFlow_0htwfu3
+	</bpmn:endEvent>
+	<bpmn:sequenceFlow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC">
+		SequenceFlow_0htwfu3UserTask_101a4l5EndEvent_10gf7v0
+	</bpmn:sequenceFlow>
+	<bpmn:sequenceFlow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC">
+		SequenceFlow_0avcu6iUserTask_101a4l5UserTask_057uj12
+	</bpmn:sequenceFlow>
+	<bpmn:userTask xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC">
+		UserTask_057uj12Handle vacation
+		requesttestmanagementUserCandidatemanagement22/08/199223/08/2017PriorityValue
+		MyDocumentation
+
+
+		management
+
+		false
+
+
+
+
+
+
+		SequenceFlow_0mtt35u
+		SequenceFlow_0avcu6i
+		SequenceFlow_1ethzhq
+	</bpmn:userTask>
+	<bpmn:userTask xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC">
+		UserTask_101a4l5Adjust vacation request${employeeName}
+		SequenceFlow_0vfosfz
+		SequenceFlow_0htwfu3
+		SequenceFlow_0avcu6i
+	</bpmn:userTask>
+	<bpmn:manualTask xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC">
+		ManualTask_0rb861eSend confirmation e-mail
+		SequenceFlow_0jikhv0
+		SequenceFlow_1rxtg0e
+	</bpmn:manualTask>
+</process>

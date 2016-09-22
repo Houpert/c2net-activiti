@@ -1,4 +1,4 @@
-package org.linagora.services;
+package org.linagora.database;
 
 import java.io.File;
 import java.io.FileWriter;
