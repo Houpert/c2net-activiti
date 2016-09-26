@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
-	xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn">
+	xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+	xmlns:dc="http://www.omg.org/spec/DD/20100524/DC">
 
 	<xsl:template match="bpmn:definitions">
 		<xsl:copy>
@@ -10,12 +12,44 @@
 
 		<xsl:for-each select="bpmn:process">
 			<process>
-				<!--TODO Filter xmlns:camunda , xmlns:bpmndi , xmlns:bpmn-->
-				<xsl:copy-of select="@*" />
 				<xsl:for-each select="node()">
-					<xsl:copy>
-						<xsl:apply-templates select="@* | node()" />
-					</xsl:copy>
+
+					<!-- EVENT -->
+					<xsl:if test="name() = 'bpmn:startEvent'">
+						<startEvent>
+							<xsl:copy-of select="@* | bpmn:extensionElements" />
+							<xsl:copy-of select="@* | bpmn:outgoing" />
+						</startEvent>
+					</xsl:if>
+
+					<xsl:if test="name() = 'bpmn:endEvent'">
+						<endEvent>
+							<xsl:copy-of select="@* | bpmn:incoming" />
+						</endEvent>
+					</xsl:if>
+
+					<!-- FLOW -->
+					<xsl:if test="name() = 'bpmn:sequenceFlow'">
+						<sequenceFlow>
+							<xsl:copy-of select="@* | bpmn:conditionExpression" />
+						</sequenceFlow>
+					</xsl:if>
+
+
+
+					<!-- GATEWAY -->
+					<xsl:if test="name() = 'bpmn:exclusiveGateway'">
+						<exclusiveGateway>
+							<xsl:copy-of select="@* | bpmn:incoming" />
+							<xsl:copy-of select="@* | bpmn:outgoing" />
+						</exclusiveGateway>
+					</xsl:if>
+
+					<!-- TASK -->
+					<xsl:if test="name() = 'bpmn:task'"></xsl:if>
+					<xsl:if test="name() = 'bpmn:userTask'"></xsl:if>
+					<xsl:if test="name() = 'bpmn:manualTask'"></xsl:if>
+
 				</xsl:for-each>
 
 			</process>
@@ -24,22 +58,3 @@
 	</xsl:template>
 
 </xsl:stylesheet>
-
-
-<!-- <xsl:apply-templates select="@*"/> -->
-<!-- bpmn:definitions <xsl:template match="*"> <xsl:copy> <xsl:apply-templates 
-	/> </xsl:copy> </xsl:template> <xsl:namespace-alias stylesheet-prefix="bpmn" 
-	result-prefix="bpmn" /> -->
-
-<!--<xsl:template match="/definitions"> <definitions> <xsl:copy-of select="@*" 
-	/> <xsl:apply-templates /> </definitions> </xsl:template> -->
-
-
-<!-- <xsl:template match="node() | @*"> <xsl:copy> <xsl:apply-templates select="@* 
-	| node()"/> </xsl:copy> </xsl:template> -->
-
-<!-- <xsl:template match="/"> <html> <body> <h2>My CD Collection</h2> <table 
-	border="1"> <tr> <td> <xsl:value-of select="/" /> </td> <td> <xsl:value-of 
-	select="." /> </td> <td> <xsl:value-of select="definitions" /> </td> <td> 
-	<xsl:value-of select="definitions/process/startEvent/outgoing" /> </td> </tr> 
-	</table> </body> </html> </xsl:template> -->
