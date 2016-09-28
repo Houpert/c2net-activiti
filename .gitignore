@@ -4,3 +4,7 @@
 /target/*
 /.mvn/*
 /.settings/*
+/.settings/
+
+/src/main/resources/test/*
+/src/main/resources/test/

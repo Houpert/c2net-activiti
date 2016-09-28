@@ -1,60 +1,181 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="1.0"
+<xsl:stylesheet version="2.0"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
 	xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
-	xmlns:dc="http://www.omg.org/spec/DD/20100524/DC">
+	xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<xsl:variable name="delimiters">
+		,."!?()
+	</xsl:variable>
+
+	<xsl:template name="makeNodeData">
+		<xsl:param name="nodes" />
+
+		<xsl:copy-of select="@*" />
+		<xsl:copy-of select="@* | bpmn:documentation" />
+		<xsl:copy-of select="@* | bpmn:outgoing" />
+		<xsl:copy-of select="@* | bpmn:incoming" />
+	</xsl:template>
+
+
+	<xsl:template name="makeExtensionElements">
+		<xsl:param name="nodes" />
+
+		<xsl:copy-of select="@*" />
+		<xsl:for-each select="node()">
+			<xsl:if test="name() = 'bpmn:extensionElements'">
+				<extensionElements>
+					<xsl:for-each select="camunda:formData/node()">
+						<xsl:if test="name() = 'camunda:formField'">
+							<activiti:formProperty>
+								<xsl:copy-of select="@* | node()" />
+							</activiti:formProperty>
+						</xsl:if>
+					</xsl:for-each>
+				</extensionElements>
+			</xsl:if>
+		</xsl:for-each>
+	</xsl:template>
 
 	<xsl:template match="bpmn:definitions">
-		<xsl:copy>
+
+		<definitions>
 			<xsl:copy-of select="@*" />
-		</xsl:copy>
 
-		<xsl:for-each select="bpmn:process">
-			<process>
-				<xsl:for-each select="node()">
+			<xsl:for-each select="bpmn:process">
+				<process>
+					<xsl:copy-of select="@*" />
+					<xsl:for-each select="node()">
 
-					<!-- EVENT -->
-					<xsl:if test="name() = 'bpmn:startEvent'">
-						<startEvent>
-							<xsl:copy-of select="@* | bpmn:extensionElements" />
-							<xsl:copy-of select="@* | bpmn:outgoing" />
-						</startEvent>
-					</xsl:if>
+						<!-- EVENT -->
+						<xsl:if test="name() = 'bpmn:startEvent'">
 
-					<xsl:if test="name() = 'bpmn:endEvent'">
-						<endEvent>
-							<xsl:copy-of select="@* | bpmn:incoming" />
-						</endEvent>
-					</xsl:if>
+							<startEvent>
+								<xsl:call-template name="makeExtensionElements">
+									<xsl:with-param name="nodes" select="node()" />
+								</xsl:call-template>
 
-					<!-- FLOW -->
-					<xsl:if test="name() = 'bpmn:sequenceFlow'">
-						<sequenceFlow>
-							<xsl:copy-of select="@* | bpmn:conditionExpression" />
-						</sequenceFlow>
-					</xsl:if>
+								<xsl:call-template name="makeNodeData">
+									<xsl:with-param name="nodes" select="node()" />
+								</xsl:call-template>
+
+								<xsl:copy-of select="@* | bpmn:conditionalEventDefinition" />
+								<xsl:copy-of select="@* | bpmn:timerEventDefinition" />
+								<xsl:copy-of select="@* | bpmn:messageEventDefinition" />
+								<xsl:copy-of select="@* | bpmn:signalEventDefinition" />
+							</startEvent>
+						</xsl:if>
+
+						<xsl:if test="name() = 'bpmn:endEvent'">
+							<endEvent>
+								<xsl:call-template name="makeNodeData">
+									<xsl:with-param name="nodes" select="node()" />
+								</xsl:call-template>
+
+								<xsl:copy-of select="@* | bpmn:messageEventDefinition" />
+								<xsl:copy-of select="@* | bpmn:escalationEventDefinition" />
+								<xsl:copy-of select="@* | bpmn:errorEventDefinition" />
+								<!-- <xsl:copy-of select="@* | bpmn:cancelEventDefinition" /> [EXPERIMENTAL] -->
+								<xsl:copy-of select="@* | bpmn:compensateEventDefinition" />
+								<xsl:copy-of select="@* | bpmn:signalEventDefinition" />
+								<xsl:copy-of select="@* | bpmn:terminateEventDefinition" />
+							</endEvent>
+						</xsl:if>
+
+
+						<!-- Is parsed, but gonna be hard to manage activiti side -->
+						<xsl:if test="name() = 'bpmn:intermediateThrowEvent'">
+							<intermediateThrowEvent>
+								<xsl:call-template name="makeNodeData">
+									<xsl:with-param name="nodes" select="node()" />
+								</xsl:call-template>
+
+								<!-- <xsl:copy-of select="@* | bpmn:compensateEventDefinition" /> 
+									[EXPERIMENTAL] -->
+								<xsl:copy-of select="@* | bpmn:signalEventDefinition" />
+								<xsl:copy-of select="@* | bpmn:extensionElements" />
+							</intermediateThrowEvent>
+						</xsl:if>
+
+
+						<!-- FLOW -->
+						<xsl:if test="name() = 'bpmn:sequenceFlow'">
+							<sequenceFlow>
+								<xsl:copy-of select="@* | bpmn:conditionExpression" />
+							</sequenceFlow>
+						</xsl:if>
 
 
 
-					<!-- GATEWAY -->
-					<xsl:if test="name() = 'bpmn:exclusiveGateway'">
-						<exclusiveGateway>
-							<xsl:copy-of select="@* | bpmn:incoming" />
-							<xsl:copy-of select="@* | bpmn:outgoing" />
-						</exclusiveGateway>
-					</xsl:if>
+						<!-- GATEWAY -->
+						<!-- Gateway not define (eventBasedGateway) -->
 
-					<!-- TASK -->
-					<xsl:if test="name() = 'bpmn:task'"></xsl:if>
-					<xsl:if test="name() = 'bpmn:userTask'"></xsl:if>
-					<xsl:if test="name() = 'bpmn:manualTask'"></xsl:if>
+						<xsl:if test="name() = 'bpmn:exclusiveGateway'">
+							<exclusiveGateway>
+								<xsl:call-template name="makeNodeData">
+									<xsl:with-param name="nodes" select="node()" />
+								</xsl:call-template>
+							</exclusiveGateway>
+						</xsl:if>
 
-				</xsl:for-each>
+						<xsl:if test="name() = 'bpmn:parallelGateway'">
+							<parallelGateway>
+								<xsl:call-template name="makeNodeData">
+									<xsl:with-param name="nodes" select="node()" />
+								</xsl:call-template>
+							</parallelGateway>
+						</xsl:if>
 
-			</process>
-		</xsl:for-each>
+						<xsl:if test="name() = 'bpmn:inclusiveGateway'">
+							<inclusiveGateway>
+								<xsl:call-template name="makeNodeData">
+									<xsl:with-param name="nodes" select="node()" />
+								</xsl:call-template>
+							</inclusiveGateway>
+						</xsl:if>
 
+						<!-- TASK -->
+						<!-- Task not define (sendTask, receiveTask, serviceTask, scriptTask, 
+							callActivity, subProcess) -->
+						<!-- [EXPERIMENTAL] businessRuleTask -->
+
+						<xsl:if test="name() = 'bpmn:task'">
+							<task>
+								<xsl:call-template name="makeNodeData">
+									<xsl:with-param name="nodes" select="node()" />
+								</xsl:call-template>
+							</task>
+						</xsl:if>
+
+						<xsl:if test="name() = 'bpmn:userTask'">
+							<userTask>
+								<xsl:call-template name="makeExtensionElements">
+									<xsl:with-param name="nodes" select="node()" />
+								</xsl:call-template>
+
+								<xsl:call-template name="makeNodeData">
+									<xsl:with-param name="nodes" select="node()" />
+								</xsl:call-template>
+							</userTask>
+						</xsl:if>
+
+						<xsl:if test="name() = 'bpmn:manualTask'">
+							<manualTask>
+								<xsl:call-template name="makeNodeData">
+									<xsl:with-param name="nodes" select="node()" />
+								</xsl:call-template>
+							</manualTask>
+						</xsl:if>
+
+
+
+					</xsl:for-each>
+
+				</process>
+			</xsl:for-each>
+		</definitions>
 	</xsl:template>
 
 </xsl:stylesheet>
