@@ -15,8 +15,6 @@
 
 		<xsl:copy-of select="@*" />
 		<xsl:copy-of select="@* | bpmn:documentation" />
-		<xsl:copy-of select="@* | bpmn:incoming" />
-		<xsl:copy-of select="@* | bpmn:outgoing" />
 	</xsl:template>
 
 
@@ -52,8 +50,8 @@
 
 	<xsl:template match="bpmn:definitions">
 
-		<definitions>
-			<xsl:copy-of select="@*" />
+		<definitions targetNamespace="http://activiti.org/bpmn20">
+			<xsl:copy-of select="@*[not(name() = 'targetNamespace')]" />
 
 			<xsl:for-each select="bpmn:process">
 				<process>

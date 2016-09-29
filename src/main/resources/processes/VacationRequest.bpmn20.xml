@@ -21,7 +21,8 @@
 
 		<userTask id="handleRequest" name="Handle vacation request">
 			<documentation>
-				${employeeName} would like to take ${numberOfDays} day(s) of vacation (Motivation:
+				${employeeName} would like to take ${numberOfDays}
+				day(s) of vacation (Motivation:
 				${vacationMotivation}).
 			</documentation>
 			<extensionElements>
@@ -47,7 +48,8 @@
 		<sequenceFlow id="flow3" sourceRef="requestApprovedDecision"
 			targetRef="sendApprovalMail">
 			<conditionExpression xsi:type="tFormalExpression">${vacationApproved
-				== 'true'}</conditionExpression>
+				== 'true'}
+			</conditionExpression>
 		</sequenceFlow>
 
 		<!-- OK -->
@@ -60,12 +62,14 @@
 		<sequenceFlow id="flow5" sourceRef="requestApprovedDecision"
 			targetRef="adjustVacationRequestTask">
 			<conditionExpression xsi:type="tFormalExpression">${vacationApproved
-				== 'false'}</conditionExpression>
+				== 'false'}
+			</conditionExpression>
 		</sequenceFlow>
 
 		<userTask id="adjustVacationRequestTask" name="Adjust vacation request">
 			<documentation>
-				Your manager has disapproved your vacation request for ${numberOfDays}
+				Your manager has disapproved your vacation request for
+				${numberOfDays}
 				days.
 				Reason: ${managerMotivation}
 			</documentation>
@@ -96,13 +100,15 @@
 		<sequenceFlow id="flow7" sourceRef="resendRequestDecision"
 			targetRef="handleRequest">
 			<conditionExpression xsi:type="tFormalExpression">${resendRequest ==
-				'true'}</conditionExpression>
+				'true'}
+			</conditionExpression>
 		</sequenceFlow>
 
 		<sequenceFlow id="flow8" sourceRef="resendRequestDecision"
 			targetRef="theEnd2">
 			<conditionExpression xsi:type="tFormalExpression">${resendRequest ==
-				'false'}</conditionExpression>
+				'false'}
+			</conditionExpression>
 		</sequenceFlow>
 		<endEvent id="theEnd2" />
 
