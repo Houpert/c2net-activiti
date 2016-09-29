@@ -10,9 +10,13 @@
 		,."!?()
 	</xsl:variable>
 
+	<xsl:template name="makeNodeDataWithoutAttribute">
+		<xsl:param name="nodes" />
+		<xsl:copy-of select="bpmn:documentation" />
+	</xsl:template>
+
 	<xsl:template name="makeNodeData">
 		<xsl:param name="nodes" />
-
 		<xsl:copy-of select="@*" />
 		<xsl:copy-of select="@* | bpmn:documentation" />
 	</xsl:template>
@@ -29,7 +33,7 @@
 						<xsl:if test="name() = 'camunda:formField'">
 							<xsl:element name="activiti:formProperty">
 								<!-- Rename the attribute name (defaultValue & label) -->
-								<!-- When enume miss the value ? -->
+								<!-- When enum miss the value ? -->
 								<xsl:copy-of
 									select="@*[not(name() = 'defaultValue') and not(name() = 'label')] | node()" />
 								<xsl:attribute name="name">
@@ -168,17 +172,41 @@
 
 						<xsl:if test="name() = 'bpmn:userTask'">
 							<userTask>
-								<xsl:call-template name="makeNodeData">
+								<xsl:copy-of
+									select="@*[not(name() = 'camunda:candidateGroups') and not(name() = 'camunda:candidateUsers')]" />
+
+								<xsl:call-template name="makeNodeDataWithoutAttribute">
 									<xsl:with-param name="nodes" select="node()" />
 								</xsl:call-template>
 
 								<xsl:call-template name="makeExtensionElements">
 									<xsl:with-param name="nodes" select="node()" />
 								</xsl:call-template>
+
+
+								<xsl:for-each select="@*">
+									<xsl:if test="name() = 'camunda:candidateUsers'">
+										<humanPerformer>
+											<resourceAssignmentExpression>
+												<xsl:element name="formalExpression">
+													<xsl:value-of select="current()" />
+												</xsl:element>
+											</resourceAssignmentExpression>
+										</humanPerformer>
+									</xsl:if>
+									<xsl:if test="name() = 'camunda:candidateGroups'">
+										<potentialOwner>
+											<resourceAssignmentExpression>
+												<xsl:element name="formalExpression">
+													<xsl:value-of select="current()" />
+												</xsl:element>
+											</resourceAssignmentExpression>
+										</potentialOwner>
+									</xsl:if>
+								</xsl:for-each>
 							</userTask>
 						</xsl:if>
 					</xsl:for-each>
-
 				</process>
 			</xsl:for-each>
 		</definitions>
