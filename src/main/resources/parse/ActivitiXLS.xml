@@ -15,8 +15,8 @@
 
 		<xsl:copy-of select="@*" />
 		<xsl:copy-of select="@* | bpmn:documentation" />
-		<xsl:copy-of select="@* | bpmn:outgoing" />
 		<xsl:copy-of select="@* | bpmn:incoming" />
+		<xsl:copy-of select="@* | bpmn:outgoing" />
 	</xsl:template>
 
 
@@ -29,9 +29,20 @@
 				<extensionElements>
 					<xsl:for-each select="camunda:formData/node()">
 						<xsl:if test="name() = 'camunda:formField'">
-							<activiti:formProperty>
-								<xsl:copy-of select="@* | node()" />
-							</activiti:formProperty>
+							<xsl:element name="activiti:formProperty">
+								<!-- Rename the attribute name (defaultValue & label) -->
+								<!-- When enume miss the value ? -->
+								<xsl:copy-of
+									select="@*[not(name() = 'defaultValue') and not(name() = 'label')] | node()" />
+								<xsl:attribute name="name">
+									<xsl:value-of select="@label" />
+								</xsl:attribute>
+								<xsl:if test="@defaultValue !=''">
+									<xsl:attribute name="value">
+										<xsl:value-of select="@defaultValue" />
+									</xsl:attribute>
+								</xsl:if>
+							</xsl:element>
 						</xsl:if>
 					</xsl:for-each>
 				</extensionElements>
@@ -53,11 +64,11 @@
 						<xsl:if test="name() = 'bpmn:startEvent'">
 
 							<startEvent>
-								<xsl:call-template name="makeExtensionElements">
+								<xsl:call-template name="makeNodeData">
 									<xsl:with-param name="nodes" select="node()" />
 								</xsl:call-template>
 
-								<xsl:call-template name="makeNodeData">
+								<xsl:call-template name="makeExtensionElements">
 									<xsl:with-param name="nodes" select="node()" />
 								</xsl:call-template>
 
@@ -149,18 +160,6 @@
 							</task>
 						</xsl:if>
 
-						<xsl:if test="name() = 'bpmn:userTask'">
-							<userTask>
-								<xsl:call-template name="makeExtensionElements">
-									<xsl:with-param name="nodes" select="node()" />
-								</xsl:call-template>
-
-								<xsl:call-template name="makeNodeData">
-									<xsl:with-param name="nodes" select="node()" />
-								</xsl:call-template>
-							</userTask>
-						</xsl:if>
-
 						<xsl:if test="name() = 'bpmn:manualTask'">
 							<manualTask>
 								<xsl:call-template name="makeNodeData">
@@ -169,8 +168,17 @@
 							</manualTask>
 						</xsl:if>
 
+						<xsl:if test="name() = 'bpmn:userTask'">
+							<userTask>
+								<xsl:call-template name="makeNodeData">
+									<xsl:with-param name="nodes" select="node()" />
+								</xsl:call-template>
 
-
+								<xsl:call-template name="makeExtensionElements">
+									<xsl:with-param name="nodes" select="node()" />
+								</xsl:call-template>
+							</userTask>
+						</xsl:if>
 					</xsl:for-each>
 
 				</process>
