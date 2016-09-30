@@ -1,8 +1,8 @@
 package org.linagora.service.rest;
 
+import org.linagora.activiti.ActivitiParse;
 import org.linagora.dao.ActivitiBpmn;
 import org.linagora.dao.exception.ExceptionGeneratorActiviti;
-import org.linagora.parse.ActivitiGenerator;
 import org.linagora.service.ServiceXML;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,7 +24,7 @@ public class WebServiceXML implements ServiceXML{
 	public String getXML(@RequestParam("file") MultipartFile file) throws ExceptionGeneratorActiviti{
 
 		try {
-			ActivitiGenerator myActivitiGenerator = new ActivitiGenerator();
+			ActivitiParse myActivitiGenerator = new ActivitiParse();
 
 			ActivitiBpmn activiti = myActivitiGenerator.parseXMLToActiviti(file);
 			

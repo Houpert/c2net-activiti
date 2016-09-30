@@ -1,4 +1,4 @@
-package org.linagora.parse;
+package org.linagora.activiti;
 
 public class ActivitiProcess {
 
