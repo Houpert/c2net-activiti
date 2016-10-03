@@ -5,10 +5,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class WebServiceActiviti {
+@RequestMapping("/notification")
+public class WebServiceNotifications {
 
-	@RequestMapping("/activiti")
-	public String startProcess(@RequestParam(value="id") String id) {
+	@RequestMapping("/send")
+	public String sendNotification(@RequestParam(value="id") String id) {
 		
 		return id;
 	}

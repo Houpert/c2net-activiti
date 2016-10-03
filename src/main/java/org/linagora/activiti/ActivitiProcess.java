@@ -6,4 +6,8 @@ public class ActivitiProcess {
 		
 	}
 	
+	public void execution(){
+		
+	}
+	
 }
