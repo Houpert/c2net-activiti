@@ -11,9 +11,13 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.log4j.Logger;
+import org.linagora.utility.LoggerManager;
 import org.springframework.web.multipart.MultipartFile;
 
 public class ActivitiParse {
+
+	final static Logger logger = Logger.getLogger(ActivitiParse.class);	
 
 	private final String defaultXslPath = "src/main/resources/parse/";
 	private final String defaultXslName = "ActivitiXLS.xml";
@@ -48,12 +52,11 @@ public class ActivitiParse {
 
 			return xmlFileAfterDone;
 		}catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LoggerManager.loggerTrace(e);
 		}
 		return null;
 	}
-	
+
 	private File getFileFromeMultipartFile(MultipartFile multipart) throws IllegalStateException, IOException {
 		File convFile = new File(multipart.getOriginalFilename());
 		convFile.createNewFile(); 
@@ -71,11 +74,11 @@ public class ActivitiParse {
 			return xmlFileAfterDone;
 		} catch (TransformerConfigurationException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LoggerManager.loggerTrace(e);
 			return null;
 		} catch (TransformerException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LoggerManager.loggerTrace(e);
 			return null;
 		}
 	}

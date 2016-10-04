@@ -48,12 +48,6 @@ public class ParseXmlBpmnTest {
 		MultipartFile myMultipartFile = getMockCommonsMultipartFile(fileToMultipart);
 		File myParsedFile = aParse.parseXMLToActiviti(myMultipartFile);
 		
-		
-		File fileOutputValid = new File(xmlPathOutput+"Parse_TestBpmnToParse.xml.bpmn20.xml");
-
-		System.out.println(fileOutputValid.length());
-		System.out.println(myParsedFile.length());
-		
 		Assert.assertNotNull(myParsedFile);
 		Assert.assertEquals(myParsedFile.getName(), aParse.generateParsedFileName(fileName));
 	}
