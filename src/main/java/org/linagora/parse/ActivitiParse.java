@@ -12,6 +12,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.log4j.Logger;
+import org.linagora.dao.ActivitiDAO;
 import org.linagora.utility.LoggerManager;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,17 +41,19 @@ public class ActivitiParse {
 		this.xslName = xslName;
 	}
 
-	public File parseXMLToActiviti(MultipartFile multipart) {
+	public ActivitiDAO parseXMLToActiviti(MultipartFile multipart) {
 		try {
 			File xslFile = getFileWithPath(xslPath, xslName);
 			File xmlFile = getFileFromeMultipartFile(multipart);
 			File xmlFileAfterDone = new File(xmlProcessPath, startNameParsing+multipart.getOriginalFilename()+extensionBPMN);
 
-			xmlFileAfterDone.deleteOnExit();
-
 			xmlFileAfterDone = parseBpmnFile(xslFile, xmlFile, xmlFileAfterDone);
 
-			return xmlFileAfterDone;
+			xmlFile.delete();
+			
+			if(xmlFileAfterDone != null)
+				return new ActivitiDAO(multipart.getOriginalFilename(), xmlFileAfterDone);
+			
 		}catch (IOException e) {
 			LoggerManager.loggerTrace(e);
 		}

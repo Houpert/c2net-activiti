@@ -20,7 +20,9 @@
 		<java.version>1.8</java.version>
 		<junit.version>4.12</junit.version>
 		<common.lang.version>2.2</common.lang.version>
-
+		<asm-all.version>3.3.1</asm-all.version>
+		<jersey-bundle.version>1.14</jersey-bundle.version>
+		<json.version>20090211</json.version>
 	</properties>
 
 	<dependencies>
@@ -29,6 +31,22 @@
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
 			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>asm</groupId>
+			<artifactId>asm-all</artifactId>
+			<version>${asm-all.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-bundle</artifactId>
+			<version>${jersey-bundle.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>${json.version}</version>
 		</dependency>
 
 		<dependency>

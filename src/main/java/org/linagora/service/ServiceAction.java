@@ -1,9 +1,9 @@
 package org.linagora.service;
 
-import org.linagora.dao.exception.ExceptionGeneratorActiviti;
+import org.linagora.exception.ExceptionGeneratorActiviti;
 import org.springframework.web.multipart.MultipartFile;
 
-public interface ServiceXML {
+public interface ServiceAction {
 
 	public String getXML(MultipartFile file) throws ExceptionGeneratorActiviti;
 	

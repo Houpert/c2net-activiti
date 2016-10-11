@@ -8,6 +8,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.linagora.dao.ActivitiDAO;
 import org.linagora.parse.ActivitiParse;
 import org.springframework.boot.test.context.TestComponent;
 import org.springframework.mock.web.MockMultipartFile;
@@ -46,21 +47,23 @@ public class ParseXmlBpmnTest {
 		File fileToMultipart = new File(xmlPathInput+fileName);
 		
 		MultipartFile myMultipartFile = getMockCommonsMultipartFile(fileToMultipart);
-		File myParsedFile = aParse.parseXMLToActiviti(myMultipartFile);
+		ActivitiDAO myBpmn = aParse.parseXMLToActiviti(myMultipartFile);
 		
-		Assert.assertNotNull(myParsedFile);
-		Assert.assertEquals(myParsedFile.getName(), aParse.generateParsedFileName(fileName));
+		myBpmn.getFile().deleteOnExit();
+		
+		Assert.assertNotNull(myBpmn);
+		Assert.assertEquals(myBpmn.getName(), aParse.generateParsedFileName(fileName));
 	}
-	
+		
 	@Test
 	public void testWrongParsing() throws Exception {
 		String fileName = "Wrong_TestBpmnToParse.xml";
 		File fileToMultipart = new File(xmlPathInput+fileName);
 		
 		MultipartFile myMultipartFile = getMockCommonsMultipartFile(fileToMultipart);
-		File myParsedFile = aParse.parseXMLToActiviti(myMultipartFile);
+		ActivitiDAO myBpmn = aParse.parseXMLToActiviti(myMultipartFile);
 		
-		Assert.assertNull(myParsedFile);
+		Assert.assertNull(myBpmn);
 	}
 
 }

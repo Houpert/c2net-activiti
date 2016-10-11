@@ -2,7 +2,7 @@ package org.linagora.communicate;
 
 import org.linagora.dao.TaskActiviti;
 
-public class NotificationService {
+public class NotificationUtility {
 	
 	private static void createNotification(String user){
 
