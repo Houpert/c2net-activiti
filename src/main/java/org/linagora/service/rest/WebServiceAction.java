@@ -23,7 +23,7 @@ public class WebServiceAction implements ServiceAction{
 	 */
 
 	@RequestMapping("/parse")
-	public String getXML(@RequestParam("file") MultipartFile file) throws ExceptionGeneratorActiviti{
+	public String generateBpmn(@RequestParam("file") MultipartFile file) throws ExceptionGeneratorActiviti{
 		ActivitiDAO myActivitiFile;
 		try {
 			ActivitiParse myActivitiGenerator = new ActivitiParse();
@@ -31,7 +31,7 @@ public class WebServiceAction implements ServiceAction{
 			myActivitiFile = myActivitiGenerator.parseXMLToActiviti(file);
 
 			if(myActivitiFile == null)
-				throw new ExceptionGeneratorActiviti("Unable to parse the xml to an activiti XML");
+				throw new ExceptionGeneratorActiviti("Unable to parse the xml to an activiti executable");
 		} catch(Exception e){
 			e.printStackTrace();
 			throw new ExceptionGeneratorActiviti("Unable to parse the XML "+e.getMessage());
@@ -39,20 +39,28 @@ public class WebServiceAction implements ServiceAction{
 		
 		try{
 			ActivitiProcess ap = new ActivitiProcess();
-			ap.execution(myActivitiFile);
+			String activitiId = ap.execution(myActivitiFile);
 			
 		} catch(Exception e){
 			e.printStackTrace();
-			throw new ExceptionGeneratorActiviti("Unable to parse the XML "+e.getMessage());
+			throw new ExceptionGeneratorActiviti("Unable to execute the bpmn"+e.getMessage());
 		}
 		
 		return myActivitiFile.getName();
 	}
 
-	@RequestMapping("/start")
-	public String startProcess(@RequestParam(value="id") String id) {
-		System.out.println("StartMyId");
+	@RequestMapping("/task/list")
+	public String checkTask(@RequestParam("id") String activitiId) throws ExceptionGeneratorActiviti {
+		ActivitiProcess ap = new ActivitiProcess();
+		String result = ap.taskFormGenerator(activitiId);
+		
+		return result;
+	}
 
-		return id;
+	@RequestMapping("/task/complete")
+
+	public String completeTask(String nameTask, String idTask) throws ExceptionGeneratorActiviti {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

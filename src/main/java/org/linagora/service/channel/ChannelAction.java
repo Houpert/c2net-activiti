@@ -9,7 +9,19 @@ import org.springframework.web.multipart.MultipartFile;
 public class ChannelAction implements ServiceAction{
 
 	@Override
-	public String getXML(MultipartFile file)  throws ExceptionGeneratorActiviti{
+	public String generateBpmn(MultipartFile file)  throws ExceptionGeneratorActiviti{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String checkTask(String activitiId) throws ExceptionGeneratorActiviti {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String completeTask(String nameTask, String idTask) throws ExceptionGeneratorActiviti {
 		// TODO Auto-generated method stub
 		return null;
 	}

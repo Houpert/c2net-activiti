@@ -5,6 +5,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface ServiceAction {
 
-	public String getXML(MultipartFile file) throws ExceptionGeneratorActiviti;
+	public String generateBpmn(MultipartFile file) throws ExceptionGeneratorActiviti;
 	
+	public String checkTask(String activitiId) throws ExceptionGeneratorActiviti;
+
+	public String completeTask(String nameTask, String idTask) throws ExceptionGeneratorActiviti;
+
 }
