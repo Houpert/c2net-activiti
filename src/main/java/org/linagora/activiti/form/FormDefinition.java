@@ -1,18 +1,62 @@
 package org.linagora.activiti.form;
 
-import java.util.List;
+import java.util.Map;
+
+import com.google.gson.Gson;
 
 public class FormDefinition {
 
-	public List<FormDefinitionAttribute> formAttribute;		/* if '*' print all Schema */
-	public String formType;
-	public String formStyle;	/*Can be empty*/
-	public String formTitle;
+	public String key;
+	public String type;
+	public String style;
+	public String title;	
+	public String placeholder;
+	public boolean required;
+	public Map<String, String> titleMap;
 
+	/*Submit button attribute*/
 	
-	public List<FormSchemaDefinition> propertiesSchema;
-	public List<String> required;
-	public String schemaType;
-	public String schemaTitle;
+	private static final String SUBMIT_TITLE = "OK";
+	private static final String SUBMIT_STYLE = "btn-info";
+	private static final String SUBMIT_TYPE = "submit";
+
+
+	public static FormDefinition makeSubmitButton(){
+		FormDefinition fda = new FormDefinition();
+		fda.title = SUBMIT_TITLE;
+		fda.style = SUBMIT_STYLE;
+		fda.type = SUBMIT_TYPE;
+		return fda;
+	}
+
+	public FormDefinition(){
+		super();
+	}
+	
+	public FormDefinition(String key){
+		this.key = key;
+	}
+
+	public FormDefinition(String key, String type) {
+		super();
+		this.key = key;
+		this.type = type;
+		this.placeholder = key;
+	}
+
+	/*Constructor for enum*/
+	public FormDefinition(String key, String type, Map<String, String> titleMap, boolean required) {
+		super();
+		this.key = key;
+		this.placeholder = key;
+		this.type = type;
+		this.titleMap = titleMap;
+		this.required = required;
+	}
+
+	public String generateJson(){
+		Gson gson = new Gson();
+		return gson.toJson(this);
+	}
 
 }

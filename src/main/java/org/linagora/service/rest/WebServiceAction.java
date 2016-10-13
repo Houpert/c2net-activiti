@@ -39,7 +39,8 @@ public class WebServiceAction implements ServiceAction{
 		
 		try{
 			ActivitiProcess ap = new ActivitiProcess();
-			String activitiId = ap.execution(myActivitiFile);
+			//TODO CHECK if needed activitiId
+			/*String activitiId = */ap.execution(myActivitiFile);
 			
 		} catch(Exception e){
 			e.printStackTrace();
@@ -53,8 +54,10 @@ public class WebServiceAction implements ServiceAction{
 	public String checkTask(@RequestParam("id") String activitiId) throws ExceptionGeneratorActiviti {
 		ActivitiProcess ap = new ActivitiProcess();
 		String result = ap.taskFormGenerator(activitiId);
-		
+
+		//TODO Patch this 
 		return result;
+		
 	}
 
 	@RequestMapping("/task/complete")

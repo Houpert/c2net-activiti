@@ -3,6 +3,8 @@ package org.linagora.activiti;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;
@@ -11,8 +13,11 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.linagora.activiti.form.Form;
 import org.linagora.dao.ActivitiDAO;
 import org.linagora.exception.ExceptionGeneratorActiviti;
+
+import com.google.gson.Gson;
 
 public class ActivitiProcess{
 
@@ -37,11 +42,12 @@ public class ActivitiProcess{
 		ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
 		TaskService taskService = processEngine.getTaskService();
 
+		List<Form> listForm = new ArrayList<Form>();
 		for(Task task : taskService.createTaskQuery().list()){
-			FormPropertyReader.generateFormProperty(task, processEngine.getFormService().getTaskFormData(task.getId()));
+			listForm.add(ActivitiFormGenerator.generateFormProperty(task, processEngine.getFormService().getTaskFormData(task.getId())));
 		}
-		
-		return "";
+		Gson gson = new Gson();
+		return gson.toJson(listForm);
 	}
 
 }

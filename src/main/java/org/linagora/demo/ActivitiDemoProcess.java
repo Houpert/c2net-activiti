@@ -1,7 +1,6 @@
 package org.linagora.demo;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,7 +17,6 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.task.Task;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
