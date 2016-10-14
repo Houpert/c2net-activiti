@@ -15,13 +15,13 @@ public class ChannelAction implements ServiceAction{
 	}
 
 	@Override
-	public String checkTask(String activitiId) throws ExceptionGeneratorActiviti {
+	public String listTask() throws ExceptionGeneratorActiviti {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public String completeTask(String nameTask, String idTask) throws ExceptionGeneratorActiviti {
+	public String completeTask(String json) throws ExceptionGeneratorActiviti {
 		// TODO Auto-generated method stub
 		return null;
 	}

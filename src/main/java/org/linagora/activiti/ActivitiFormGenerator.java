@@ -18,6 +18,7 @@ import org.linagora.exception.ExceptionGeneratorActiviti;
 public class ActivitiFormGenerator {
 
 	private final static String ENUM_INFORMATION_VALUES = "values";
+	private final static String TASK_ID_KEY = "taskId";
 
 	public static Form generateFormProperty(Task task, FormData formData ) throws ExceptionGeneratorActiviti {
 		List<FormDefinition> formDef = new ArrayList<FormDefinition>();
@@ -40,12 +41,16 @@ public class ActivitiFormGenerator {
 			schemaDef.addLinkedHashMap(propertyForm.getId(), schemaData);
 		}
 
+		/*Add taskId n schema*/
+		schemaDef.addLinkedHashMap(TASK_ID_KEY, new SchemaDao(task.getTaskDefinitionKey(), FormPropertyType.STRING.getType(), task.getId()));
+		formDef.add(FormDefinition.makeSubmitButton());
+
 		Form formDefinition = new Form(formDef, schemaDef, task.getId());
 		return formDefinition;
 	}
 
 	private static FormDefinition makeFormDefEnum(FormProperty propertyForm, FormPropertyType propertyType) throws ExceptionGeneratorActiviti {
-		return new FormDefinition(propertyForm.getId(), propertyType.getType(), checkValidityCast(propertyForm), false);
+		return new FormDefinition(propertyForm.getId(), propertyType.getType(), checkValidityCast(propertyForm));
 	}
 
 	private static FormPropertyType getFormType(FormType type) {

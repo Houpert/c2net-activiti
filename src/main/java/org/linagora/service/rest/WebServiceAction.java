@@ -51,18 +51,14 @@ public class WebServiceAction implements ServiceAction{
 	}
 
 	@RequestMapping("/task/list")
-	public String checkTask(@RequestParam("id") String activitiId) throws ExceptionGeneratorActiviti {
+	public String listTask() throws ExceptionGeneratorActiviti {
 		ActivitiProcess ap = new ActivitiProcess();
-		String result = ap.taskFormGenerator(activitiId);
-
-		//TODO Patch this 
-		return result;
-		
+		return ap.taskFormGenerator();
 	}
 
 	@RequestMapping("/task/complete")
 
-	public String completeTask(String nameTask, String idTask) throws ExceptionGeneratorActiviti {
+	public String completeTask(String json) throws ExceptionGeneratorActiviti {
 		// TODO Auto-generated method stub
 		return null;
 	}

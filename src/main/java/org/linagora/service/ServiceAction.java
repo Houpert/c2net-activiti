@@ -7,8 +7,8 @@ public interface ServiceAction {
 
 	public String generateBpmn(MultipartFile file) throws ExceptionGeneratorActiviti;
 	
-	public String checkTask(String activitiId) throws ExceptionGeneratorActiviti;
+	public String listTask() throws ExceptionGeneratorActiviti;
 
-	public String completeTask(String nameTask, String idTask) throws ExceptionGeneratorActiviti;
+	public String completeTask(String json) throws ExceptionGeneratorActiviti;
 
 }

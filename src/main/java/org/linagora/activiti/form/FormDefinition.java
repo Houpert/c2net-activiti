@@ -11,7 +11,7 @@ public class FormDefinition {
 	public String style;
 	public String title;	
 	public String placeholder;
-	public boolean required;
+	public boolean required = true;
 	public Map<String, String> titleMap;
 
 	/*Submit button attribute*/
@@ -19,7 +19,6 @@ public class FormDefinition {
 	private static final String SUBMIT_TITLE = "OK";
 	private static final String SUBMIT_STYLE = "btn-info";
 	private static final String SUBMIT_TYPE = "submit";
-
 
 	public static FormDefinition makeSubmitButton(){
 		FormDefinition fda = new FormDefinition();
@@ -45,18 +44,16 @@ public class FormDefinition {
 	}
 
 	/*Constructor for enum*/
-	public FormDefinition(String key, String type, Map<String, String> titleMap, boolean required) {
+	public FormDefinition(String key, String type, Map<String, String> titleMap) {
 		super();
 		this.key = key;
 		this.placeholder = key;
 		this.type = type;
 		this.titleMap = titleMap;
-		this.required = required;
 	}
 
 	public String generateJson(){
 		Gson gson = new Gson();
 		return gson.toJson(this);
 	}
-
 }

@@ -42,8 +42,6 @@ public class Form {
 	}
 	
 	public String generateJson(){
-		form.add(FormDefinition.makeSubmitButton());
-		
 		Gson gson = new Gson();
 		return gson.toJson(this);
 	}

@@ -38,7 +38,7 @@ public class ActivitiProcess{
 		return pi.getId();
 	}
 
-	public String taskFormGenerator(String activitiId) throws ExceptionGeneratorActiviti{
+	public String taskFormGenerator() throws ExceptionGeneratorActiviti{
 		ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
 		TaskService taskService = processEngine.getTaskService();
 
