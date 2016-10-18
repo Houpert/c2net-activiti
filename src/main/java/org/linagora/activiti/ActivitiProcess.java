@@ -13,6 +13,7 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.form.FormData;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.linagora.activiti.form.Form;
@@ -46,7 +47,8 @@ public class ActivitiProcess{
 
 		List<Form> listForm = new ArrayList<Form>();
 		for(Task task : taskService.createTaskQuery().list()){
-			List<Formly> formly = ActivitiFormGenerator.generateForm(processEngine.getFormService().getTaskFormData(task.getId()));
+			FormData taskForm = processEngine.getFormService().getTaskFormData(task.getId());
+			List<Formly> formly = ActivitiFormGenerator.generateForm(task.getId(), taskForm);
 			listForm.add(new Form(task.getId(), formly));
 		}
 		Gson gson = new Gson();

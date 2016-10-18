@@ -8,6 +8,7 @@ public enum FormlyType {
 	LONG("number", "number"),
 	BOOLEAN("conditional", "checkbox"),
 	DATE("date", "date"),
+	HIDDEN("hidden", "hidden"),
 	CUSTOM_TYPE("custom type", "custom")
 	;
 	
