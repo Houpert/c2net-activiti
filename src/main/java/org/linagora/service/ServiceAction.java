@@ -9,6 +9,6 @@ public interface ServiceAction {
 	
 	public String listTask() throws ExceptionGeneratorActiviti;
 
-	public String completeTask(String json) throws ExceptionGeneratorActiviti;
+	public boolean completeTask(String json) throws ExceptionGeneratorActiviti;
 
 }

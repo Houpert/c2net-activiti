@@ -6,6 +6,7 @@ import org.linagora.exception.ExceptionGeneratorActiviti;
 import org.linagora.parse.ActivitiParse;
 import org.linagora.service.ServiceAction;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,12 +23,11 @@ public class WebServiceAction implements ServiceAction{
 	 * @throws DSSException
 	 */
 
-	@RequestMapping("/parse")
+	@RequestMapping(value = "/parse", method = RequestMethod.POST)
 	public String generateBpmn(@RequestParam("file") MultipartFile file) throws ExceptionGeneratorActiviti{
 		ActivitiDAO myActivitiFile;
 		try {
 			ActivitiParse myActivitiGenerator = new ActivitiParse();
-
 			myActivitiFile = myActivitiGenerator.parseXMLToActiviti(file);
 
 			if(myActivitiFile == null)
@@ -50,16 +50,18 @@ public class WebServiceAction implements ServiceAction{
 		return myActivitiFile.getName();
 	}
 
-	@RequestMapping("/task/list")
+	@RequestMapping(value = "/task/list", method = RequestMethod.GET)
 	public String listTask() throws ExceptionGeneratorActiviti {
-		ActivitiProcess ap = new ActivitiProcess();
-		return ap.taskFormGenerator();
+		ActivitiProcess activitiProcess = new ActivitiProcess();
+		return activitiProcess.listTaskForm();
 	}
 
-	@RequestMapping("/task/complete")
-
-	public String completeTask(String json) throws ExceptionGeneratorActiviti {
+	@RequestMapping(value = "/task/complet", method = RequestMethod.POST)
+	public boolean completeTask(@RequestParam String json) throws ExceptionGeneratorActiviti {
 		// TODO Auto-generated method stub
-		return null;
+		ActivitiProcess activitiProcess = new ActivitiProcess();
+		
+		System.out.println(json);
+		return activitiProcess.completeTask(json);
 	}
 }

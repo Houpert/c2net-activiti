@@ -21,8 +21,8 @@ public class ChannelAction implements ServiceAction{
 	}
 
 	@Override
-	public String completeTask(String json) throws ExceptionGeneratorActiviti {
+	public boolean completeTask(String json) throws ExceptionGeneratorActiviti {
 		// TODO Auto-generated method stub
-		return null;
+		return false;
 	}
 }
