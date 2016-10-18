@@ -8,37 +8,12 @@ import com.google.gson.Gson;
 public class Form {
 
 	public String taskId;
-	public List<FormDefinition> form = new ArrayList<FormDefinition>();
-	public SchemaDefinition schema;
+	public List<Formly> form = new ArrayList<Formly>();
 	
-	public Form(List<FormDefinition> form, SchemaDefinition schema, String taskId) {
+	public Form(String taskId, List<Formly> form) {
 		super();
 		this.form = form;
-		this.schema = schema;
 		this.taskId = taskId;
-	}
-	
-	public String getTaskId() {
-		return taskId;
-	}
-
-	public void setTaskId(String taskId) {
-		this.taskId = taskId;
-	}
-
-	public List<FormDefinition> getForm() {
-		return form;
-	}
-
-	public void setForm(List<FormDefinition> form) {
-		this.form = form;
-	}
-
-	public SchemaDefinition getSchema() {
-		return schema;
-	}
-	public void setSchema(SchemaDefinition schema) {
-		this.schema = schema;
 	}
 	
 	public String generateJson(){

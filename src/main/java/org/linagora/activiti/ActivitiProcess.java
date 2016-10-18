@@ -16,6 +16,7 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.linagora.activiti.form.Form;
+import org.linagora.activiti.form.Formly;
 import org.linagora.dao.ActivitiDAO;
 import org.linagora.exception.ExceptionGeneratorActiviti;
 
@@ -36,7 +37,6 @@ public class ActivitiProcess{
 		//Start the processus
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 		ProcessInstance pi = runtimeService.startProcessInstanceByKey(bpmn.getProcessId());
-		System.out.println(pi.getId());
 		return pi.getId();
 	}
 
@@ -46,7 +46,8 @@ public class ActivitiProcess{
 
 		List<Form> listForm = new ArrayList<Form>();
 		for(Task task : taskService.createTaskQuery().list()){
-			listForm.add(ActivitiFormGenerator.generateFormProperty(task, processEngine.getFormService().getTaskFormData(task.getId())));
+			List<Formly> formly = ActivitiFormGenerator.generateForm(processEngine.getFormService().getTaskFormData(task.getId()));
+			listForm.add(new Form(task.getId(), formly));
 		}
 		Gson gson = new Gson();
 		return gson.toJson(listForm);

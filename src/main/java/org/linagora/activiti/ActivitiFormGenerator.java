@@ -7,65 +7,48 @@ import java.util.Map;
 import org.activiti.engine.form.FormData;
 import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.form.FormType;
-import org.activiti.engine.task.Task;
-import org.linagora.activiti.form.Form;
-import org.linagora.activiti.form.FormDefinition;
-import org.linagora.activiti.form.FormPropertyType;
-import org.linagora.activiti.form.SchemaDao;
-import org.linagora.activiti.form.SchemaDefinition;
+import org.linagora.activiti.form.Formly;
+import org.linagora.activiti.form.FormlyType;
+import org.linagora.activiti.form.TemplateOptions;
 import org.linagora.exception.ExceptionGeneratorActiviti;
 
 public class ActivitiFormGenerator {
 
 	private final static String ENUM_INFORMATION_VALUES = "values";
-	private final static String TASK_ID_KEY = "taskId";
 
-	public static Form generateFormProperty(Task task, FormData formData ) throws ExceptionGeneratorActiviti {
-		List<FormDefinition> formDef = new ArrayList<FormDefinition>();
-		SchemaDefinition schemaDef = new SchemaDefinition(task.getName());
-
+	public static List<Formly> generateForm(FormData formData) throws ExceptionGeneratorActiviti {
+		List<Formly> formlyList= new ArrayList<Formly>();
 		for(FormProperty propertyForm : formData.getFormProperties()){
-			FormPropertyType propertyType = getFormType(propertyForm.getType());
-			SchemaDao schemaData = new SchemaDao(propertyForm.getId(), propertyType.getType());
-			//TODO Manage Form property and constraint in schema
+			FormlyType propertyType = getFormType(propertyForm.getType());
+			String key = propertyForm.getId();
+			String type = propertyType.getTypeFormly();
+			TemplateOptions templateOptions = new TemplateOptions(propertyForm, propertyType);
 
-			if(propertyType.equals(FormPropertyType.DATE) || propertyType.equals(FormPropertyType.CUSTOM_TYPE))
+			if(propertyType.equals(FormlyType.DATE) || propertyType.equals(FormlyType.CUSTOM_TYPE))
 				throw new ExceptionGeneratorActiviti("Unable to parse the Form for Property");
-			else if(propertyType.equals(FormPropertyType.ENUM)){
-				formDef.add(makeFormDefEnum(propertyForm, propertyType));
-				schemaData.addEnums(checkValidityCast(propertyForm));
-			}else {
-				formDef.add(new FormDefinition(propertyForm.getId(), propertyType.getType()));
+			else if(propertyType.equals(FormlyType.ENUM)){
+				templateOptions = makeTemplateOption(templateOptions, propertyForm);
 			}
 			
-			schemaDef.addLinkedHashMap(propertyForm.getId(), schemaData);
+			System.out.println("##"+propertyForm.getValue());
+			formlyList.add(new Formly(key, type, templateOptions, propertyForm.getValue()));
 		}
-
-		/*Add taskId n schema*/
-		schemaDef.addLinkedHashMap(TASK_ID_KEY, new SchemaDao(task.getTaskDefinitionKey(), FormPropertyType.STRING.getType(), task.getId()));
-		formDef.add(FormDefinition.makeSubmitButton());
-
-		Form formDefinition = new Form(formDef, schemaDef, task.getId());
-		return formDefinition;
+		return formlyList;
 	}
 
-	private static FormDefinition makeFormDefEnum(FormProperty propertyForm, FormPropertyType propertyType) throws ExceptionGeneratorActiviti {
-		return new FormDefinition(propertyForm.getId(), propertyType.getType(), checkValidityCast(propertyForm));
-	}
-
-	private static FormPropertyType getFormType(FormType type) {
+	private static FormlyType getFormType(FormType type) {
 		if(type != null)
-			return FormPropertyType.valueOf(type.getName().toUpperCase());
-		return FormPropertyType.CUSTOM_TYPE;
+			return FormlyType.valueOf(type.getName().toUpperCase());
+		return FormlyType.CUSTOM_TYPE;
 	}
 
-	
-	
 	@SuppressWarnings("unchecked")
-	private static Map<String, String> checkValidityCast(FormProperty propertyForm) throws ExceptionGeneratorActiviti {
+	private static TemplateOptions makeTemplateOption(TemplateOptions templateOptions, FormProperty propertyForm) throws ExceptionGeneratorActiviti {
 		try {
-			Object enumList = propertyForm.getType().getInformation(ENUM_INFORMATION_VALUES);
-			return (Map<String, String>) enumList;
+			Map<String, String> map = (Map<String, String>)propertyForm.getType().getInformation(ENUM_INFORMATION_VALUES);
+			for (Map.Entry<String, String> entry : map.entrySet())
+				templateOptions.addOption(entry.getValue(), entry.getKey());
+			return templateOptions;
 		}catch(Exception e){
 			throw new ExceptionGeneratorActiviti("Unable to cast enum value");
 		}

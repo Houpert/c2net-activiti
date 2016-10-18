@@ -34,16 +34,16 @@
 							<xsl:element name="activiti:formProperty">
 								<!-- Rename the attribute name (defaultValue & label) -->
 								<!-- When enum miss the value ? -->
-								<xsl:copy-of
-									select="@*[not(name() = 'defaultValue') and not(name() = 'label')] | node()" />
 								<xsl:attribute name="name">
 									<xsl:value-of select="@label" />
 								</xsl:attribute>
 								<xsl:if test="@defaultValue !=''">
-									<xsl:attribute name="value">
+									<xsl:attribute name="default">
 										<xsl:value-of select="@defaultValue" />
 									</xsl:attribute>
 								</xsl:if>
+								<xsl:copy-of
+									select="@*[not(name() = 'defaultValue') and not(name() = 'label')] | node()" />
 							</xsl:element>
 						</xsl:if>
 					</xsl:for-each>
