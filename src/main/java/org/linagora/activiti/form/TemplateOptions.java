@@ -22,7 +22,6 @@ public class TemplateOptions {
 	}
 
 	public TemplateOptions(FormProperty propertyForm, FormlyType type) {
-		super();
 		if(propertyForm.getName() != null)
 			this.label = propertyForm.getName();
 		else
@@ -91,6 +90,8 @@ public class TemplateOptions {
 	}
 }
 
+
+/*Needed for enumeration*/
 class Options {
 	private String name;
 	private String value;

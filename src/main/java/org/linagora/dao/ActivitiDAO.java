@@ -2,11 +2,14 @@ package org.linagora.dao;
 
 import java.io.File;
 
+import com.google.gson.Gson;
+import com.google.gson.annotations.Expose;
+
 public class ActivitiDAO {
 	
 	public String processId;
-	public File file;
-
+    
+	@Expose(serialize = false, deserialize = false)	public File file;
 	public ActivitiDAO(String process, File file) {
 		super();
 		this.processId = process;
@@ -27,5 +30,10 @@ public class ActivitiDAO {
 	}
 	public String getName(){
 		return file.getName();
+	}
+	
+	public String generateJson(){
+		Gson gson = new Gson();
+		return gson.toJson(this);
 	}
 }

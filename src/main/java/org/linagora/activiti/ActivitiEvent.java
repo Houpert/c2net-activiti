@@ -6,9 +6,7 @@ public class ActivitiEvent implements ActivitiEventListener {
 
 	@Override
 	public void onEvent(org.activiti.engine.delegate.event.ActivitiEvent event) {
-		
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

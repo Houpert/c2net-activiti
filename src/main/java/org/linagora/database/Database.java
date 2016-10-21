@@ -12,15 +12,11 @@ public class Database {
 
 	public static String edit(ActivitiDAO bpmn){
 		String idEdit = bpmn.getName();
-
-
 		return idEdit;
 	}
 
 	public static String delete(String id){
 		String idDelete = id;
-
-
 		return idDelete;
 	}
 

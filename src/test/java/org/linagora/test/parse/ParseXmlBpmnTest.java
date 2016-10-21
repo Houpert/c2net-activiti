@@ -47,7 +47,7 @@ public class ParseXmlBpmnTest {
 		File fileToMultipart = new File(xmlPathInput+fileName);
 		
 		MultipartFile myMultipartFile = getMockCommonsMultipartFile(fileToMultipart);
-		ActivitiDAO myBpmn = aParse.parseXMLToActiviti(myMultipartFile);
+		ActivitiDAO myBpmn = aParse.parseXMLToActivitiExecutable(myMultipartFile);
 		
 		myBpmn.getFile().deleteOnExit();
 		
@@ -61,7 +61,7 @@ public class ParseXmlBpmnTest {
 		File fileToMultipart = new File(xmlPathInput+fileName);
 		
 		MultipartFile myMultipartFile = getMockCommonsMultipartFile(fileToMultipart);
-		ActivitiDAO myBpmn = aParse.parseXMLToActiviti(myMultipartFile);
+		ActivitiDAO myBpmn = aParse.parseXMLToActivitiExecutable(myMultipartFile);
 		
 		Assert.assertNull(myBpmn);
 	}

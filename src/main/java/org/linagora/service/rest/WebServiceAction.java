@@ -3,9 +3,7 @@ package org.linagora.service.rest;
 import java.util.Map;
 
 import org.linagora.activiti.ActivitiProcess;
-import org.linagora.dao.ActivitiDAO;
 import org.linagora.exception.ExceptionGeneratorActiviti;
-import org.linagora.parse.ActivitiParse;
 import org.linagora.service.ServiceAction;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,40 +26,16 @@ public class WebServiceAction implements ServiceAction{
 
 	@RequestMapping(value = "/parse", method = RequestMethod.POST)
 	public String generateBpmn(@RequestParam("file") MultipartFile file) throws ExceptionGeneratorActiviti{
-		ActivitiDAO myActivitiFile;
-		try {
-			ActivitiParse myActivitiGenerator = new ActivitiParse();
-			myActivitiFile = myActivitiGenerator.parseXMLToActiviti(file);
-
-			if(myActivitiFile == null)
-				throw new ExceptionGeneratorActiviti("Unable to parse the xml to an activiti executable");
-		} catch(Exception e){
-			e.printStackTrace();
-			throw new ExceptionGeneratorActiviti("Unable to parse the XML "+e.getMessage());
-		}
-		
-		try{
-			ActivitiProcess ap = new ActivitiProcess();
-			//TODO CHECK if needed activitiId
-			/*String activitiId = */ap.execution(myActivitiFile);
-			
-		} catch(Exception e){
-			e.printStackTrace();
-			throw new ExceptionGeneratorActiviti("Unable to execute the bpmn"+e.getMessage());
-		}
-		
-		return myActivitiFile.getName();
+		return ActivitiProcess.initBpmnIoToActiviti(file);
 	}
 
 	@RequestMapping(value = "/task/list", method = RequestMethod.GET)
 	public String listTask() throws ExceptionGeneratorActiviti {
-		ActivitiProcess activitiProcess = new ActivitiProcess();
-		return activitiProcess.listTaskForm();
+		return ActivitiProcess.listTaskForm();
 	}
 
 	@RequestMapping(value = "/task/complet", method = RequestMethod.POST)
 	public boolean completeTask(@RequestBody Map<String, Object>  map) throws ExceptionGeneratorActiviti {
-		ActivitiProcess activitiProcess = new ActivitiProcess();
-		return activitiProcess.completeTask(map);
+		return ActivitiProcess.completeTask(map);
 	}
 }

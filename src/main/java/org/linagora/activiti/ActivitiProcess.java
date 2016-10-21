@@ -20,18 +20,46 @@ import org.linagora.activiti.form.Form;
 import org.linagora.activiti.form.Formly;
 import org.linagora.dao.ActivitiDAO;
 import org.linagora.exception.ExceptionGeneratorActiviti;
+import org.linagora.parse.ActivitiParse;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
 
 public class ActivitiProcess{
 
+	private final static String MY_TASK_KEY = "taskId";
+	
 	public void optimisation(){
 	}
 
-	public String execution(ActivitiDAO bpmn) throws FileNotFoundException{
+	public static String initBpmnIoToActiviti(MultipartFile file)throws ExceptionGeneratorActiviti{
+		ActivitiDAO myActivitiFile = null;
+		try {
+			ActivitiParse myActivitiGenerator = new ActivitiParse();
+			myActivitiFile = myActivitiGenerator.parseXMLToActivitiExecutable(file);
+
+			if(myActivitiFile == null)
+				throw new ExceptionGeneratorActiviti("Unable to parse the xml to an activiti executable");
+		} catch(Exception e){
+			e.printStackTrace();
+			throw new ExceptionGeneratorActiviti("Unable to parse the XML "+e.getMessage());
+		}
+
+		try{
+			/*String activitiId = */execution(myActivitiFile);
+		} catch(Exception e){
+			e.printStackTrace();
+			throw new ExceptionGeneratorActiviti("Unable to execute the bpmn"+e.getMessage());
+		}
+
+		return myActivitiFile.generateJson();
+	}
+
+	public static String execution(ActivitiDAO bpmn) throws FileNotFoundException{
+		ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
+		
 		InputStream inputStream = new FileInputStream(bpmn.getFile());
 
-		ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
 		RepositoryService repositoryService = processEngine.getRepositoryService();
 		repositoryService.createDeployment().addInputStream(bpmn.getName(), inputStream).deploy();
 
@@ -41,7 +69,7 @@ public class ActivitiProcess{
 		return pi.getId();
 	}
 
-	public String listTaskForm() throws ExceptionGeneratorActiviti{
+	public static String listTaskForm() throws ExceptionGeneratorActiviti{
 		ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
 		TaskService taskService = processEngine.getTaskService();
 
@@ -55,13 +83,13 @@ public class ActivitiProcess{
 		return gson.toJson(listForm);
 	}
 
-	public boolean completeTask(Map<String,Object> mapAttribute) throws ExceptionGeneratorActiviti{
-		String keyTask = "taskId";
-		String taskId = (String) mapAttribute.get(keyTask);
-		mapAttribute.remove(keyTask);
-
+	public static boolean completeTask(Map<String,Object> mapAttribute) throws ExceptionGeneratorActiviti{
 		ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
 		TaskService taskService = processEngine.getTaskService();
+		
+		String taskId = (String) mapAttribute.get(MY_TASK_KEY);
+		mapAttribute.remove(MY_TASK_KEY);
+
 		try{
 			taskService.complete(taskId, mapAttribute);
 		}catch(ActivitiObjectNotFoundException e){

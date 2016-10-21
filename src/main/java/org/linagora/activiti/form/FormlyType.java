@@ -12,8 +12,8 @@ public enum FormlyType {
 	CUSTOM_TYPE("custom type", "custom")
 	;
 	
-	private final String typeBpmn;
-	private final String typeFormly;
+	private final String typeBpmn;		/*Name generate by activiti*/
+	private final String typeFormly;	/*Name needed for generate an form by angular-formly*/
 	
 	private FormlyType(final String typeBpmn, final String typeFormly){
 		this.typeBpmn = typeBpmn;
@@ -31,9 +31,4 @@ public enum FormlyType {
 	public boolean equalsName(String otherType) {
         return (otherType == null) ? false : typeBpmn.equals(otherType);
     }
-
-    public String toString() {
-       return "[typeBpmn : "+this.getTypeBpmn()+", typeFormly : "+this.getTypeFormly()+"]";
-    }
-	
  }
