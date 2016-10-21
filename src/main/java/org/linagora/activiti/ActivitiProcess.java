@@ -76,7 +76,7 @@ public class ActivitiProcess{
 		List<Form> listForm = new ArrayList<Form>();
 		for(Task task : taskService.createTaskQuery().list()){
 			FormData taskForm = processEngine.getFormService().getTaskFormData(task.getId());
-			List<Formly> formly = ActivitiFormGenerator.generateForm(task.getId(), taskForm);
+			List<Formly> formly = ActivitiFormGenerator.generateForm(task, taskForm);
 			listForm.add(new Form(task.getId(), formly));
 		}
 		Gson gson = new Gson();

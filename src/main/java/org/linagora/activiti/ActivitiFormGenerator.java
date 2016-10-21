@@ -7,6 +7,7 @@ import java.util.Map;
 import org.activiti.engine.form.FormData;
 import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.form.FormType;
+import org.activiti.engine.task.Task;
 import org.linagora.activiti.form.Formly;
 import org.linagora.activiti.form.FormlyType;
 import org.linagora.activiti.form.TemplateOptions;
@@ -19,7 +20,7 @@ public class ActivitiFormGenerator {
 	private final static String TASK_VALUE_FORM = ""; /*Empty for not appear in form*/
 
 
-	public static List<Formly> generateForm(String taskId, FormData formData) throws ExceptionGeneratorActiviti {
+	public static List<Formly> generateForm(Task task, FormData formData) throws ExceptionGeneratorActiviti {
 		List<Formly> formlyList= new ArrayList<Formly>();
 
 		for(FormProperty propertyForm : formData.getFormProperties()){
@@ -34,8 +35,9 @@ public class ActivitiFormGenerator {
 			formlyList.add(new Formly(propertyForm.getId(), propertyType.getTypeFormly(), templateOptions, propertyForm.getValue()));
 		}
 
-		formlyList.add(new Formly(TASK_ATTRIBUTE, FormlyType.STRING.getTypeFormly(),
-				new TemplateOptions(TASK_VALUE_FORM, FormlyType.HIDDEN.getTypeFormly()), taskId));
+		TemplateOptions templateOptionsHidden = new TemplateOptions(TASK_VALUE_FORM, FormlyType.HIDDEN.getTypeFormly());
+		templateOptionsHidden.setPlaceholder(task.getName());	/*Used for have some information*/
+		formlyList.add(new Formly(TASK_ATTRIBUTE, FormlyType.STRING.getTypeFormly(), templateOptionsHidden, task.getId()));
 
 		return formlyList;
 	}
