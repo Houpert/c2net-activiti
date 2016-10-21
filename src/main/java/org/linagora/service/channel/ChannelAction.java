@@ -1,5 +1,7 @@
 package org.linagora.service.channel;
 
+import java.util.Map;
+
 import org.linagora.exception.ExceptionGeneratorActiviti;
 import org.linagora.service.ServiceAction;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +23,7 @@ public class ChannelAction implements ServiceAction{
 	}
 
 	@Override
-	public boolean completeTask(String json) throws ExceptionGeneratorActiviti {
+	public boolean completeTask(Map<String, Object>  json) throws ExceptionGeneratorActiviti {
 		// TODO Auto-generated method stub
 		return false;
 	}

@@ -16,6 +16,11 @@ public class TemplateOptions {
 	private boolean required = false;
 	private List<Options> options;
 
+	public TemplateOptions(String label, String type){
+		this.label = label;
+		this.type = type;
+	}
+
 	public TemplateOptions(FormProperty propertyForm, FormlyType type) {
 		super();
 		if(propertyForm.getName() != null)
@@ -23,17 +28,18 @@ public class TemplateOptions {
 		else
 			this.label = propertyForm.getId();
 		this.placeholder = this.label;
-		
+
 		this.required = propertyForm.isRequired();
 		if(type.equals(FormlyType.LONG) || type.equals(FormlyType.INTEGER))
 			this.setType(type);
+		else if(type.equals(FormlyType.HIDDEN))
+			this.type = FormlyType.HIDDEN.getTypeFormly();
 	}
 
 	public TemplateOptions(FormProperty property, FormlyType type, List<Options> options) {
 		this(property, type);
 		this.options = options;
 	}
-
 
 	public String getLabel() {
 		return label;

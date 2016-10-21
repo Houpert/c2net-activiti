@@ -33,7 +33,8 @@ public class ActivitiFormGenerator {
 			formlyList.add(new Formly(propertyForm.getId(), propertyType.getTypeFormly(), templateOptions, propertyForm.getValue()));
 		}
 		
-		formlyList.add(new Formly(TASK_ATTRIBUTE, FormlyType.HIDDEN.getTypeFormly(), taskId));
+		formlyList.add(new Formly(TASK_ATTRIBUTE, FormlyType.STRING.getTypeFormly(),
+				new TemplateOptions("", FormlyType.HIDDEN.getTypeFormly()), taskId));
 
 		return formlyList;
 	}

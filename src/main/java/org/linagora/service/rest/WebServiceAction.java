@@ -1,10 +1,13 @@
 package org.linagora.service.rest;
 
+import java.util.Map;
+
 import org.linagora.activiti.ActivitiProcess;
 import org.linagora.dao.ActivitiDAO;
 import org.linagora.exception.ExceptionGeneratorActiviti;
 import org.linagora.parse.ActivitiParse;
 import org.linagora.service.ServiceAction;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -57,11 +60,8 @@ public class WebServiceAction implements ServiceAction{
 	}
 
 	@RequestMapping(value = "/task/complet", method = RequestMethod.POST)
-	public boolean completeTask(@RequestParam String json) throws ExceptionGeneratorActiviti {
-		// TODO Auto-generated method stub
+	public boolean completeTask(@RequestBody Map<String, Object>  map) throws ExceptionGeneratorActiviti {
 		ActivitiProcess activitiProcess = new ActivitiProcess();
-		
-		System.out.println(json);
-		return activitiProcess.completeTask(json);
+		return activitiProcess.completeTask(map);
 	}
 }

@@ -1,5 +1,7 @@
 package org.linagora.service;
 
+import java.util.Map;
+
 import org.linagora.exception.ExceptionGeneratorActiviti;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -9,6 +11,6 @@ public interface ServiceAction {
 	
 	public String listTask() throws ExceptionGeneratorActiviti;
 
-	public boolean completeTask(String json) throws ExceptionGeneratorActiviti;
+	public boolean completeTask(Map<String, Object>  json) throws ExceptionGeneratorActiviti;
 
 }

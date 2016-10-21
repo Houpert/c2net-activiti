@@ -55,10 +55,8 @@ public class ActivitiProcess{
 		return gson.toJson(listForm);
 	}
 
-	public boolean completeTask(String json) throws ExceptionGeneratorActiviti{
+	public boolean completeTask(Map<String,Object> mapAttribute) throws ExceptionGeneratorActiviti{
 		String keyTask = "taskId";
-		Map<String,Object> mapAttribute = new Gson().fromJson(json, Map.class);
-
 		String taskId = (String) mapAttribute.get(keyTask);
 		mapAttribute.remove(keyTask);
 
