@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.linagora.activiti.ActivitiProcess;
 import org.linagora.exception.ExceptionGeneratorActiviti;
-import org.linagora.service.ServiceAction;
+import org.linagora.service.api.ServiceAction;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/action")
-public class WebServiceAction implements ServiceAction{
+public class ServiceActionImpl implements ServiceAction{
 
 	/**
 	 * This web service parse an XML to be readable for Activiti

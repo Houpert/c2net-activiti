@@ -1,4 +1,4 @@
-package org.linagora.service;
+package org.linagora.service.api;
 
 import java.util.Map;
 

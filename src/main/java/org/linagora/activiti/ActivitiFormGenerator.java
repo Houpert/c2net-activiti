@@ -17,7 +17,7 @@ public class ActivitiFormGenerator {
 
 	private final static String ENUM_INFORMATION_VALUES = "values";
 	private final static String TASK_ATTRIBUTE = "taskId";
-	private final static String TASK_VALUE_FORM = ""; /*Empty for not appear in form*/
+	private final static String TASK_VALUE_HIDDEN_FORM = ""; /*Empty for not appear in form*/
 
 
 	public static List<Formly> generateForm(Task task, FormData formData) throws ExceptionGeneratorActiviti {
@@ -35,7 +35,7 @@ public class ActivitiFormGenerator {
 			formlyList.add(new Formly(propertyForm.getId(), propertyType.getTypeFormly(), templateOptions, propertyForm.getValue()));
 		}
 
-		TemplateOptions templateOptionsHidden = new TemplateOptions(TASK_VALUE_FORM, FormlyType.HIDDEN.getTypeFormly());
+		TemplateOptions templateOptionsHidden = new TemplateOptions(TASK_VALUE_HIDDEN_FORM, FormlyType.HIDDEN.getTypeFormly());
 		templateOptionsHidden.setPlaceholder(task.getName());	/*Used for have some information*/
 		formlyList.add(new Formly(TASK_ATTRIBUTE, FormlyType.STRING.getTypeFormly(), templateOptionsHidden, task.getId()));
 

@@ -3,12 +3,12 @@ package org.linagora.service.channel;
 import java.util.Map;
 
 import org.linagora.exception.ExceptionGeneratorActiviti;
-import org.linagora.service.ServiceAction;
+import org.linagora.service.api.ServiceAction;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-public class ChannelAction implements ServiceAction{
+public class ChannelActionImpl implements ServiceAction{
 
 	@Override
 	public String generateBpmn(MultipartFile file)  throws ExceptionGeneratorActiviti{
