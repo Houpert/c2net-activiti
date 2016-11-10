@@ -14,13 +14,19 @@
 		<xsl:param name="nodes" />
 		<xsl:copy-of select="bpmn:documentation" />
 	</xsl:template>
+	<!-- camunda:class -->
 
 	<xsl:template name="makeNodeData">
 		<xsl:param name="nodes" />
-		<xsl:copy-of select="@*" />
-		<xsl:copy-of select="@* | bpmn:documentation" />
+		
+		<xsl:if test="@camunda:class">
+			<xsl:attribute name="activiti:class">
+				<xsl:value-of select="@camunda:class" />
+			</xsl:attribute>
+		</xsl:if>
+		
+		<xsl:copy-of select="@*[not(name() = 'camunda:class')]  | bpmn:documentation" />
 	</xsl:template>
-
 
 	<xsl:template name="makeExtensionElements">
 		<xsl:param name="nodes" />
@@ -168,6 +174,14 @@
 									<xsl:with-param name="nodes" select="node()" />
 								</xsl:call-template>
 							</manualTask>
+						</xsl:if>
+
+						<xsl:if test="name() = 'bpmn:serviceTask'">
+							<serviceTask>
+								<xsl:call-template name="makeNodeData">
+									<xsl:with-param name="nodes" select="node()" />
+								</xsl:call-template>
+							</serviceTask>
 						</xsl:if>
 
 						<xsl:if test="name() = 'bpmn:userTask'">
