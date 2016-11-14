@@ -1,17 +1,51 @@
 package org.linagora.activiti;
 
-import org.activiti.engine.RuntimeService;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.springframework.stereotype.Component;
+
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
 
 @Component("startProcessInstanceDelegate")
 public class WebServiceTask implements JavaDelegate {
 
-	public void execute(DelegateExecution execution) throws Exception {
-		RuntimeService runtimeService = execution.getEngineServices().getRuntimeService();
+	private Expression url;
+	private Expression json;
 
-		runtimeService.startProcessInstanceByKey("ServiceTask");
+	public void execute(DelegateExecution execution) throws Exception {
+		String jsonStr = null;
+		String urlStr = null;
+		boolean isGet = false;
+
+		try{
+			urlStr = (String)url.getValue(execution);
+		}catch(Exception e){
+			throw e;
+		}
+
+		try{
+			jsonStr = (String)json.getValue(execution);
+		}catch(Exception e){
+			isGet = true;
+		}
+
+		Client client = Client.create();
+		WebResource webResource = client.resource(urlStr);
+
+		if(isGet){
+			webResource.get(String.class);
+			System.out.println("WEB SERVICE GET DONE");
+		}else{
+			ClientResponse response = webResource.accept("application/json")
+					.type("application/json").post(ClientResponse.class, jsonStr);
+			System.out.println("WEB SERVICE POST DONE");
+		}
+
+
+
 	}
 
 }

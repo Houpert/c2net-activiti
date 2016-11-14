@@ -18,13 +18,13 @@
 
 	<xsl:template name="makeNodeData">
 		<xsl:param name="nodes" />
-		
+
 		<xsl:if test="@camunda:class">
 			<xsl:attribute name="activiti:class">
 				<xsl:value-of select="@camunda:class" />
 			</xsl:attribute>
 		</xsl:if>
-		
+
 		<xsl:copy-of select="@*[not(name() = 'camunda:class')]  | bpmn:documentation" />
 	</xsl:template>
 
@@ -50,6 +50,25 @@
 								</xsl:if>
 								<xsl:copy-of
 									select="@*[not(name() = 'defaultValue') and not(name() = 'label')] | node()" />
+							</xsl:element>
+						</xsl:if>
+					</xsl:for-each>
+
+					<xsl:for-each select="camunda:properties/node()">
+						<xsl:if test="name() = 'camunda:property'">
+							<xsl:element name="activiti:field">
+								<!-- Rename the attribute name (defaultValue & label) -->
+								<!-- When enum miss the value ? -->
+								<xsl:attribute name="name">
+										<xsl:value-of select="@label" />
+								</xsl:attribute>
+								<xsl:if test="@value !=''">
+									<xsl:attribute name="stringValue">
+										<xsl:value-of select="@value" />
+									</xsl:attribute>
+								</xsl:if>
+								<xsl:copy-of
+									select="@*[not(name() = 'value') and not(name() = 'label')] | node()" />
 							</xsl:element>
 						</xsl:if>
 					</xsl:for-each>
@@ -156,8 +175,8 @@
 						</xsl:if>
 
 						<!-- TASK -->
-						<!-- Task not define (sendTask, receiveTask, serviceTask, scriptTask, 
-							callActivity, subProcess) -->
+						<!-- Task not define (sendTask, receiveTask, scriptTask, callActivity, 
+							subProcess) -->
 						<!-- [EXPERIMENTAL] businessRuleTask -->
 
 						<xsl:if test="name() = 'bpmn:task'">
@@ -179,6 +198,10 @@
 						<xsl:if test="name() = 'bpmn:serviceTask'">
 							<serviceTask>
 								<xsl:call-template name="makeNodeData">
+									<xsl:with-param name="nodes" select="node()" />
+								</xsl:call-template>
+
+								<xsl:call-template name="makeExtensionElements">
 									<xsl:with-param name="nodes" select="node()" />
 								</xsl:call-template>
 							</serviceTask>
