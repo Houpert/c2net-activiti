@@ -7,26 +7,27 @@ import java.util.Properties;
 
 public class PropertyFile {
 
-	public Properties getPropValues(String configName){
+	public Properties getProperties(String configName) throws Exception{
 		Properties prop = new Properties();
 		InputStream inputStream = null;
 		try {
 			String propFileName = configName;
- 
 			inputStream = getClass().getClassLoader().getResourceAsStream(propFileName);
  
-			if (inputStream != null) {
+			if (inputStream != null)
 				prop.load(inputStream);
-			} else {
+			else 
 				throw new FileNotFoundException("property file '" + propFileName + "' not found in the classpath");
-			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
+			throw e;
 		} finally {
 			try {
 				inputStream.close();
 			} catch (IOException e) {
 				e.printStackTrace();
+				throw e;
 			}
 		}
 		return prop;

@@ -29,23 +29,24 @@ public class WebServiceTask implements JavaDelegate {
 		try{
 			jsonStr = (String)json.getValue(execution);
 		}catch(Exception e){
+			//No JSON -> GET
 			isGet = true;
 		}
 
 		Client client = Client.create();
 		WebResource webResource = client.resource(urlStr);
 
+		//GET WebService
 		if(isGet){
 			webResource.get(String.class);
 			System.out.println("WEB SERVICE GET DONE");
-		}else{
+		}
+		//POST WebService
+		else{
 			ClientResponse response = webResource.accept("application/json")
 					.type("application/json").post(ClientResponse.class, jsonStr);
 			System.out.println("WEB SERVICE POST DONE");
 		}
-
-
-
 	}
 
 }
