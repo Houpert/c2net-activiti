@@ -4,8 +4,8 @@ import java.net.SocketException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.linagora.utility.DateManager;
 
@@ -32,29 +32,30 @@ public class CalendarUtility {
 
 	public Calendar createCalendar(String name, List<String> attendeeList, String organizerName, String localisation)
 			throws SocketException, ParseException, URISyntaxException {
+
+		//Default setting VCalendar
 		Calendar calendar = new Calendar();
 		calendar.getProperties().add(Version.VERSION_2_0);
 
+		//Initialize date VEvent
 		DateTime start = new DateTime(DateManager.today());
 		DateTime end = new DateTime(DateManager.addHours(ADD_HOURS));
 		CalendarBuilder builder = new CalendarBuilder();
 		TimeZoneRegistry registry = builder.getRegistry();
-		TimeZone tz = registry.getTimeZone("Europe/Berlin");	//TODO
+		TimeZone tz = registry.getTimeZone("Europe/Berlin"); // TODO
 		start.setTimeZone(tz);
 		end.setTimeZone(tz);
 
-
+		//Initialize VEvent
 		VEvent event = new VEvent(start, end, name);
-		// event.getProperties().add(new UidGenerator(name).generateUid());
-		Uid uid = new Uid("873aa439-bef7-4358-aeb2-6856a077a10b");
+		Uid uid = new Uid(UUID.randomUUID().toString());
 		event.getProperties().add(uid);
 		event.getProperties().add(Transp.OPAQUE);
 		event.getProperties().add(new Location(localisation));
-		
-		// event.getOrganizer().setCalAddress(URI.create("mailto:" +
-		// organizer));
+
+		//Generate user to the event
 		Organizer organizer = new Organizer(URI.create("mailto:" + organizerName));
-		organizer.getParameters().add(new Cn("admin admin"));
+		organizer.getParameters().add(new Cn(organizerName));
 
 		event.getProperties().add(organizer);
 		for (String attendeeMail : attendeeList) {
@@ -65,7 +66,6 @@ public class CalendarUtility {
 			att.getParameters().add(PartStat.NEEDS_ACTION);
 			event.getProperties().add(att);
 		}
-
 		calendar.getComponents().add(event);
 		return calendar;
 	}
