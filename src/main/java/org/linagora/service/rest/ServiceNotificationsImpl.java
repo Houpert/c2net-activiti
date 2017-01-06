@@ -7,11 +7,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/notification")
-public class ServiceNotificationsImpl implements ServiceNotification{
+public class ServiceNotificationsImpl implements ServiceNotification {
 
 	@RequestMapping("/send")
-	public String sendNotification(@RequestParam(value="id") String id) {
-		
+	public String sendNotification(@RequestParam(value = "id") String id) {
 		return id;
 	}
 }

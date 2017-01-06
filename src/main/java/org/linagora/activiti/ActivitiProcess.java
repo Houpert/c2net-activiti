@@ -27,12 +27,12 @@ import com.google.gson.Gson;
 
 public class ActivitiProcess{
 
-	private final static String MY_TASK_KEY = "taskId";
+	private final String MY_TASK_KEY = "taskId";
 	
 	public void optimisation(){
 	}
 
-	public static String initBpmnIoToActiviti(MultipartFile file)throws ExceptionGeneratorActiviti{
+	public String initBpmnIoToActiviti(MultipartFile file)throws ExceptionGeneratorActiviti{
 		ActivitiDAO myActivitiFile = null;
 		try {
 			ActivitiParse myActivitiGenerator = new ActivitiParse();
@@ -49,13 +49,13 @@ public class ActivitiProcess{
 			/*String activitiId = */execution(myActivitiFile);
 		} catch(Exception e){
 			e.printStackTrace();
-			throw new ExceptionGeneratorActiviti("Unable to execute the bpmn"+e.getMessage());
+			throw new ExceptionGeneratorActiviti("Unable to execute the bpmn "+e.getMessage());
 		}
 
 		return myActivitiFile.generateJson();
 	}
 
-	public static String execution(ActivitiDAO bpmn) throws FileNotFoundException{
+	public String execution(ActivitiDAO bpmn) throws FileNotFoundException{
 		ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
 		
 		InputStream inputStream = new FileInputStream(bpmn.getFile());
@@ -69,7 +69,7 @@ public class ActivitiProcess{
 		return pi.getId();
 	}
 
-	public static String listTaskForm() throws ExceptionGeneratorActiviti{
+	public String listTaskForm() throws ExceptionGeneratorActiviti{
 		ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
 		TaskService taskService = processEngine.getTaskService();
 
@@ -83,7 +83,7 @@ public class ActivitiProcess{
 		return gson.toJson(listForm);
 	}
 
-	public static boolean completeTask(Map<String,Object> mapAttribute) throws ExceptionGeneratorActiviti{
+	public boolean completeTask(Map<String,Object> mapAttribute) throws ExceptionGeneratorActiviti{
 		ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
 		TaskService taskService = processEngine.getTaskService();
 		

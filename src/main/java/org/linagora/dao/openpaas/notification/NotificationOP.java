@@ -1,22 +1,22 @@
-package org.linagora.dao.openpaas;
+package org.linagora.dao.openpaas.notification;
 
 import java.util.List;
 
 import com.google.gson.Gson;
 
-public class OpenPaasNotification {
+public class NotificationOP {
 
 	private String title;
-	private ActionNotification action;
-	private ObjectNotification object;
+	private NotificationActionOP action;
+	private NotificationObjectOP object;
 	private String link;
-	private LevelNotification level;
+	private NotificationLevelOP level;
 	private String author;
 	
-	private List<TargetNotification> target;
+	private List<NotificationTargetOP> target;
 	
-	public OpenPaasNotification(String title, ActionNotification action, ObjectNotification object, String link,
-			LevelNotification level, String author, List<TargetNotification> target) {
+	public NotificationOP(String title, NotificationActionOP action, NotificationObjectOP object, String link,
+			NotificationLevelOP level, String author, List<NotificationTargetOP> target) {
 		super();
 		this.title = title;
 		this.action = action;
@@ -35,19 +35,19 @@ public class OpenPaasNotification {
 		this.title = title;
 	}
 
-	public ActionNotification getAction() {
+	public NotificationActionOP getAction() {
 		return action;
 	}
 
-	public void setAction(ActionNotification action) {
+	public void setAction(NotificationActionOP action) {
 		this.action = action;
 	}
 
-	public ObjectNotification getObject() {
+	public NotificationObjectOP getObject() {
 		return object;
 	}
 
-	public void setObject(ObjectNotification object) {
+	public void setObject(NotificationObjectOP object) {
 		this.object = object;
 	}
 
@@ -59,11 +59,11 @@ public class OpenPaasNotification {
 		this.link = link;
 	}
 
-	public LevelNotification getLevel() {
+	public NotificationLevelOP getLevel() {
 		return level;
 	}
 
-	public void setLevel(LevelNotification level) {
+	public void setLevel(NotificationLevelOP level) {
 		this.level = level;
 	}
 
@@ -75,11 +75,11 @@ public class OpenPaasNotification {
 		this.author = author;
 	}
 
-	public List<TargetNotification> getTarget() {
+	public List<NotificationTargetOP> getTarget() {
 		return target;
 	}
 
-	public void setTarget(List<TargetNotification> target) {
+	public void setTarget(List<NotificationTargetOP> target) {
 		this.target = target;
 	}
 	
@@ -87,7 +87,7 @@ public class OpenPaasNotification {
 		Gson gson = new Gson();
 		String json = gson.toJson(this);
 		json = json.toLowerCase();
-		json = json.replace("objecttype", "objectType");
+		json = json.replace("\"objecttype\"", "\"objectType\"");
 		return json;
 	}
 	

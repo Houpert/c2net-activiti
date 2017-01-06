@@ -1,6 +1,6 @@
-package org.linagora.dao.openpaas;
+package org.linagora.dao.openpaas.notification;
 
-public enum LevelNotification {
+public enum NotificationLevelOP {
 
 	TRANSIENT("transient"),
 	PERSISTANT("persistant"),
@@ -12,7 +12,7 @@ public enum LevelNotification {
 		return level;
 	}
 
-	private LevelNotification(String level) {
+	private NotificationLevelOP(String level) {
 		this.level = level;
 	}
 }

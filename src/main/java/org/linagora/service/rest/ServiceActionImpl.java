@@ -14,28 +14,31 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/action")
-public class ServiceActionImpl implements ServiceAction{
+public class ServiceActionImpl implements ServiceAction {
 
 	/**
 	 * This web service parse an XML to be readable for Activiti
 	 *
-	 * @param String xml	The XML of BPMN to execute with Activiti
+	 * @param String
+	 *            xml The XML of BPMN to execute with Activiti
 	 *
 	 * @throws DSSException
 	 */
 
+	private ActivitiProcess activiti = new ActivitiProcess();
+
 	@RequestMapping(value = "/parse", method = RequestMethod.POST)
-	public String generateBpmn(@RequestParam("file") MultipartFile file) throws ExceptionGeneratorActiviti{
-		return ActivitiProcess.initBpmnIoToActiviti(file);
+	public String generateBpmn(@RequestParam("file") MultipartFile file) throws ExceptionGeneratorActiviti {
+		return activiti.initBpmnIoToActiviti(file);
 	}
 
 	@RequestMapping(value = "/task/list", method = RequestMethod.GET)
 	public String listTask() throws ExceptionGeneratorActiviti {
-		return ActivitiProcess.listTaskForm();
+		return activiti.listTaskForm();
 	}
 
 	@RequestMapping(value = "/task/complet", method = RequestMethod.POST)
-	public boolean completeTask(@RequestBody Map<String, Object>  map) throws ExceptionGeneratorActiviti {
-		return ActivitiProcess.completeTask(map);
+	public boolean completeTask(@RequestBody Map<String, Object> map) throws ExceptionGeneratorActiviti {
+		return activiti.completeTask(map);
 	}
 }
