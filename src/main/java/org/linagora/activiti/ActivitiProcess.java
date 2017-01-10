@@ -47,7 +47,8 @@ public class ActivitiProcess {
 		}
 
 		try {
-			execution(myActivitiFile);
+			String idNumber = execution(myActivitiFile);
+			myActivitiFile.setIdNumber(idNumber);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new ExceptionGeneratorActiviti("Unable to execute the bpmn " + e.getMessage());
@@ -107,11 +108,15 @@ public class ActivitiProcess {
 			Execution execution = runtimeService.createExecutionQuery().processInstanceId(processId)
 					.activityId(receiveTaskid).singleResult();
 
+			if (execution == null) {
+				throw new ActivitiObjectNotFoundException("ProcessId or ReceiveTaskId not found");
+			}
+
 			runtimeService.signal(execution.getId());
 		} catch (ActivitiObjectNotFoundException e) {
 			throw new ExceptionGeneratorActiviti("Unable to find the task id");
 		}
-		
+
 		return true;
 
 	}
