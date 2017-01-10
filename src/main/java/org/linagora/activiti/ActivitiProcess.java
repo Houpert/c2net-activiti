@@ -66,6 +66,7 @@ public class ActivitiProcess{
 		//Start the processus
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 		ProcessInstance pi = runtimeService.startProcessInstanceByKey(bpmn.getProcessId());
+		
 		return pi.getId();
 	}
 

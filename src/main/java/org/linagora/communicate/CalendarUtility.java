@@ -5,6 +5,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.linagora.utility.DateManager;
@@ -28,16 +29,19 @@ import net.fortuna.ical4j.model.property.Version;
 
 public class CalendarUtility {
 
+	private static final String MAP_NAME = "name";
+	private static final String MAP_LOCATION = "location";
+	private static final String MAP_ATTENDEE = "attendee";
 	private final int ADD_HOURS = 2;
 
-	public Calendar createCalendar(String name, List<String> attendeeList, String organizerName, String localisation)
+	public Calendar createCalendar(String name, List<String> attendeeList, String organizerName, String location)
 			throws SocketException, ParseException, URISyntaxException {
 
-		//Default setting VCalendar
+		// Default setting VCalendar
 		Calendar calendar = new Calendar();
 		calendar.getProperties().add(Version.VERSION_2_0);
 
-		//Initialize date VEvent
+		// Initialize date VEvent
 		DateTime start = new DateTime(DateManager.today());
 		DateTime end = new DateTime(DateManager.addHours(ADD_HOURS));
 		CalendarBuilder builder = new CalendarBuilder();
@@ -46,14 +50,14 @@ public class CalendarUtility {
 		start.setTimeZone(tz);
 		end.setTimeZone(tz);
 
-		//Initialize VEvent
+		// Initialize VEvent
 		VEvent event = new VEvent(start, end, name);
 		Uid uid = new Uid(UUID.randomUUID().toString());
 		event.getProperties().add(uid);
 		event.getProperties().add(Transp.OPAQUE);
-		event.getProperties().add(new Location(localisation));
+		event.getProperties().add(new Location(location));
 
-		//Generate user to the event
+		// Generate user to the event
 		Organizer organizer = new Organizer(URI.create("mailto:" + organizerName));
 		organizer.getParameters().add(new Cn(organizerName));
 
@@ -68,6 +72,24 @@ public class CalendarUtility {
 		}
 		calendar.getComponents().add(event);
 		return calendar;
+	}
+
+	public Calendar createCalendarFromJson(Map<String, Object> map, String organizerName) throws Exception {
+		Calendar cal;
+		try {
+			String name = (String) map.get(MAP_NAME);
+			String location = (String) map.get(MAP_LOCATION);
+			List<String> attendeeList = (List<String>) map.get(MAP_ATTENDEE);
+
+			if (name == null || attendeeList == null) {
+				throw new Exception("An event name or attendee list is needed");
+			}
+
+			cal = createCalendar(name, attendeeList, organizerName, location);
+			return cal;
+		} catch (Exception e) {
+			throw e;
+		}
 	}
 
 }

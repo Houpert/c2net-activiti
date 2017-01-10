@@ -10,7 +10,7 @@ public class OpenPaasOrchestrator {
 
 	private final String type = "application/json";
 
-	public String wsCalendar(ApacheHttpClient client, String webServicePath, String json, TypeRequest request) {
+	public String wsOpCall(ApacheHttpClient client, String webServicePath, String json, TypeRequest request) {
 		try {
 			if (client != null) {
 				WebResource webResource = client.resource(webServicePath);

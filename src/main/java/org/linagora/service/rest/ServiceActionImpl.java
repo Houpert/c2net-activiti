@@ -22,7 +22,7 @@ public class ServiceActionImpl implements ServiceAction {
 	 * @param String
 	 *            xml The XML of BPMN to execute with Activiti
 	 *
-	 * @throws DSSException
+	 * @throws ExceptionGeneratorActiviti
 	 */
 
 	private ActivitiProcess activiti = new ActivitiProcess();

@@ -38,6 +38,7 @@ public class OpenPaasConnector {
 
 	private final String type = "application/json";
 	private final OpenPaasOrchestrator opc = new OpenPaasOrchestrator();
+	private OpenPaasUser opu;
 
 	private WebResource webResource;
 	private ApacheHttpClient client;
@@ -45,7 +46,7 @@ public class OpenPaasConnector {
 	private NotificationUtility notificationUtility;
 	private CalendarUtility calendarUtility;
 
-	public OpenPaasConnector() throws Exception {
+	public OpenPaasConnector(){
 		try {
 			PropertyFile propertyFile = new PropertyFile();
 			Properties prop = propertyFile.getProperties(configFilePath);
@@ -55,11 +56,12 @@ public class OpenPaasConnector {
 			notificationApiPath = prop.getProperty("service.notification");
 			calendarsApiPath = prop.getProperty("service.calendars");
 
+			opu = new OpenPaasUser(prop.getProperty("user.username"), prop.getProperty("user.password"));
+
 			notificationUtility = new NotificationUtility();
 			calendarUtility = new CalendarUtility();
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw e;
 		}
 	}
 
@@ -84,9 +86,8 @@ public class OpenPaasConnector {
 		return webServiceApi + loginApiPath;
 	}
 
-	public static void main(String[] args) throws Exception{
+	public static void main(String[] args) throws Exception {
 		// USED for test
-		OpenPaasUser user = new OpenPaasUser("admin@open-paas.org", "secret");
 		OpenPaasConnector opc = new OpenPaasConnector();
 
 		List<String> attendeeList = new ArrayList<String>();
@@ -96,7 +97,7 @@ public class OpenPaasConnector {
 		Calendar cal = opc.getCalendarUtility().createCalendar("MyEventName", attendeeList, "admin@open-paas.org",
 				"MyEventLocation");
 
-		opc.wsCall(user, ActionActiviti.CALENDAR, cal);
+		opc.wsCallGenerator(ActionActiviti.CALENDAR, cal);
 	}
 
 	private void prepareRequest(OpenPaasUser user, String ws) {
@@ -127,8 +128,8 @@ public class OpenPaasConnector {
 		}
 	}
 
-	public void wsCall(OpenPaasUser user, ActionActiviti action, Object request) {
-		ApacheHttpClient client = login(user);
+	public String wsCallGenerator(ActionActiviti action, Object request) {
+		ApacheHttpClient client = login(opu);
 		String json = null;
 		TypeRequest type = TypeRequest.POST;
 		switch (action) {
@@ -147,7 +148,7 @@ public class OpenPaasConnector {
 			json = notification.generateJson();
 			break;
 		}
-		opc.wsCalendar(client, getPath(action), json, type);
+		return opc.wsOpCall(client, getPath(action), json, type);
 	}
 
 	public String getUserId() {
@@ -160,6 +161,10 @@ public class OpenPaasConnector {
 
 	public CalendarUtility getCalendarUtility() {
 		return calendarUtility;
+	}
+
+	public OpenPaasUser getOpu() {
+		return opu;
 	}
 
 }
