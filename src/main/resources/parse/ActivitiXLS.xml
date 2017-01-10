@@ -195,6 +195,14 @@
 							</manualTask>
 						</xsl:if>
 
+						<xsl:if test="name() = 'bpmn:receiveTask'">
+							<receiveTask>
+								<xsl:call-template name="makeNodeData">
+									<xsl:with-param name="nodes" select="node()" />
+								</xsl:call-template>
+							</receiveTask>
+						</xsl:if>
+
 						<xsl:if test="name() = 'bpmn:serviceTask'">
 							<serviceTask>
 								<xsl:call-template name="makeNodeData">

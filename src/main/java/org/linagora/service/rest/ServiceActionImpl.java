@@ -41,4 +41,10 @@ public class ServiceActionImpl implements ServiceAction {
 	public boolean completeTask(@RequestBody Map<String, Object> map) throws ExceptionGeneratorActiviti {
 		return activiti.completeTask(map);
 	}
+
+	@RequestMapping(value = "/task/receive", method = RequestMethod.POST)
+	public boolean executeReceiveTask(@RequestParam("processId") String processId,
+			@RequestParam("taskId") String receiveTaskId) throws ExceptionGeneratorActiviti {
+		return activiti.completeReiceive(processId, receiveTaskId);
+	}
 }

@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-public class ChannelActionImpl implements ServiceAction{
+public class ChannelActionImpl implements ServiceAction {
 
 	@Override
-	public String generateBpmn(MultipartFile file)  throws ExceptionGeneratorActiviti{
+	public String generateBpmn(MultipartFile file) throws ExceptionGeneratorActiviti {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -23,7 +23,13 @@ public class ChannelActionImpl implements ServiceAction{
 	}
 
 	@Override
-	public boolean completeTask(Map<String, Object>  json) throws ExceptionGeneratorActiviti {
+	public boolean completeTask(Map<String, Object> json) throws ExceptionGeneratorActiviti {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean executeReceiveTask(String processId, String receiveTaskId) throws ExceptionGeneratorActiviti {
 		// TODO Auto-generated method stub
 		return false;
 	}

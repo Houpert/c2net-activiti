@@ -6,6 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/negociation")
-public class ServiceNegociationImpl implements ServiceNegociation{
+public class ServiceNegociationImpl implements ServiceNegociation {
 
 }

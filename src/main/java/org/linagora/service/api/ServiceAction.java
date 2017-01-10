@@ -8,9 +8,10 @@ import org.springframework.web.multipart.MultipartFile;
 public interface ServiceAction {
 
 	public String generateBpmn(MultipartFile file) throws ExceptionGeneratorActiviti;
-	
+
 	public String listTask() throws ExceptionGeneratorActiviti;
 
-	public boolean completeTask(Map<String, Object>  json) throws ExceptionGeneratorActiviti;
+	public boolean completeTask(Map<String, Object> json) throws ExceptionGeneratorActiviti;
 
+	public boolean executeReceiveTask(String processId, String receiveTaskId) throws ExceptionGeneratorActiviti;
 }
