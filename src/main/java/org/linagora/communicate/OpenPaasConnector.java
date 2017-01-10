@@ -1,8 +1,5 @@
 package org.linagora.communicate;
 
-import java.net.SocketException;
-import java.net.URISyntaxException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
