@@ -51,4 +51,10 @@ public class ActivitiDAO {
 		Gson gson = new Gson();
 		return gson.toJson(this);
 	}
+
+	@Override
+	public String toString() {
+		return "ActivitiDAO [idNumber=" + idNumber + ", processId=" + processId + ", file=" + file + "]";
+	}
+
 }

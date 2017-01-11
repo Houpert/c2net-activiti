@@ -25,13 +25,25 @@ public class ServiceActionImpl implements ServiceAction {
 	 * @throws ExceptionGeneratorActiviti
 	 */
 
+	/* Save and Execution */
 	private ActivitiProcess activiti = new ActivitiProcess();
 
-	@RequestMapping(value = "/parse", method = RequestMethod.POST)
-	public String generateBpmn(@RequestParam("file") MultipartFile file) throws ExceptionGeneratorActiviti {
-		return activiti.initBpmnIoToActiviti(file);
+	@RequestMapping(value = "/parse/save", method = RequestMethod.POST)
+	public String saveBpmn(@RequestParam("file") MultipartFile file) throws ExceptionGeneratorActiviti {
+		return activiti.initBpmnIoToActiviti(file, false);
 	}
 
+	@RequestMapping(value = "/parse/execute", method = RequestMethod.POST)
+	public String generateBpmn(@RequestParam("file") MultipartFile file) throws ExceptionGeneratorActiviti {
+		return activiti.initBpmnIoToActiviti(file, true);
+	}
+
+	@RequestMapping(value = "/execute", method = RequestMethod.POST)
+	public String executeBpmn(@RequestParam("nameProcess") String nameProcess) throws ExceptionGeneratorActiviti {
+		return activiti.executeBpmn(nameProcess);
+	}
+
+	/* Manage task side*/
 	@RequestMapping(value = "/task/list", method = RequestMethod.GET)
 	public String listTask() throws ExceptionGeneratorActiviti {
 		return activiti.listTaskForm();

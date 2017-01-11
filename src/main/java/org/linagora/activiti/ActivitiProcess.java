@@ -33,7 +33,7 @@ public class ActivitiProcess {
 	public void optimisation() {
 	}
 
-	public String initBpmnIoToActiviti(MultipartFile file) throws ExceptionGeneratorActiviti {
+	public String initBpmnIoToActiviti(MultipartFile file, boolean execute) throws ExceptionGeneratorActiviti {
 		ActivitiDAO myActivitiFile = null;
 		try {
 			ActivitiParse myActivitiGenerator = new ActivitiParse();
@@ -47,17 +47,38 @@ public class ActivitiProcess {
 		}
 
 		try {
-			String idNumber = execution(myActivitiFile);
-			myActivitiFile.setIdNumber(idNumber);
+			if(execute){
+				String idNumber = saveAndExecute(myActivitiFile);
+				myActivitiFile.setIdNumber(idNumber);
+			}else{
+				saveBpmn(myActivitiFile);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new ExceptionGeneratorActiviti("Unable to execute the bpmn " + e.getMessage());
 		}
-
 		return myActivitiFile.generateJson();
 	}
 
-	public String execution(ActivitiDAO bpmn) throws FileNotFoundException {
+	public String saveBpmn(ActivitiDAO bpmn) throws FileNotFoundException {
+		ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
+
+		InputStream inputStream = new FileInputStream(bpmn.getFile());
+
+		RepositoryService repositoryService = processEngine.getRepositoryService();
+		repositoryService.createDeployment().addInputStream(bpmn.getName(), inputStream).deploy();
+		return bpmn.getProcessId();
+	}
+
+	public String executeBpmn(String id) {
+		ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
+		RuntimeService runtimeService = processEngine.getRuntimeService();
+		ProcessInstance pi = runtimeService.startProcessInstanceByKey(id);
+
+		return pi.getId();
+	}
+
+	public String saveAndExecute(ActivitiDAO bpmn) throws FileNotFoundException {
 		ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
 
 		InputStream inputStream = new FileInputStream(bpmn.getFile());
@@ -109,12 +130,12 @@ public class ActivitiProcess {
 					.activityId(receiveTaskid).singleResult();
 
 			if (execution == null) {
-				throw new ActivitiObjectNotFoundException("ProcessId or ReceiveTaskId not found");
+				throw new ActivitiObjectNotFoundException("Unable to find the receiveTask");
 			}
 
 			runtimeService.signal(execution.getId());
 		} catch (ActivitiObjectNotFoundException e) {
-			throw new ExceptionGeneratorActiviti("Unable to find the task id");
+			throw new ExceptionGeneratorActiviti("Unable to find the ProcessId or ReceiveTaskId");
 		}
 
 		return true;

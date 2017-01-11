@@ -9,9 +9,14 @@ public interface ServiceAction {
 
 	public String generateBpmn(MultipartFile file) throws ExceptionGeneratorActiviti;
 
+	public String saveBpmn(MultipartFile file) throws ExceptionGeneratorActiviti;
+
+	public String executeBpmn(String nameProcess) throws ExceptionGeneratorActiviti;
+
 	public String listTask() throws ExceptionGeneratorActiviti;
 
 	public boolean completeTask(Map<String, Object> json) throws ExceptionGeneratorActiviti;
 
 	public boolean executeReceiveTask(String processId, String receiveTaskId) throws ExceptionGeneratorActiviti;
+
 }

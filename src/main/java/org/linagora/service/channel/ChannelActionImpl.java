@@ -17,6 +17,18 @@ public class ChannelActionImpl implements ServiceAction {
 	}
 
 	@Override
+	public String saveBpmn(MultipartFile file) throws ExceptionGeneratorActiviti {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String executeBpmn(String nameProcess) throws ExceptionGeneratorActiviti {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
 	public String listTask() throws ExceptionGeneratorActiviti {
 		// TODO Auto-generated method stub
 		return null;
@@ -33,4 +45,5 @@ public class ChannelActionImpl implements ServiceAction {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
 }
