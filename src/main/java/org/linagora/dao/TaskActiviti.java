@@ -4,6 +4,8 @@ public enum TaskActiviti {
 
 	TASK,
 	USER_TASK,
-	MANUAL_TASK
+	MANUAL_TASK,
+	RECEIVE_TASK,
+	SERVICE_TASK
 	
 }

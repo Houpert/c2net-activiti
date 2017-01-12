@@ -175,7 +175,7 @@
 						</xsl:if>
 
 						<!-- TASK -->
-						<!-- Task not define (sendTask, receiveTask, scriptTask, callActivity, 
+						<!-- Task not define (sendTask, scriptTask, callActivity, 
 							subProcess) -->
 						<!-- [EXPERIMENTAL] businessRuleTask -->
 

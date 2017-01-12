@@ -7,12 +7,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.ManualTask;
+import org.activiti.bpmn.model.ReceiveTask;
+import org.activiti.bpmn.model.ServiceTask;
+import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.form.FormData;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -20,6 +27,8 @@ import org.activiti.engine.task.Task;
 import org.linagora.activiti.form.Form;
 import org.linagora.activiti.form.Formly;
 import org.linagora.dao.ActivitiDAO;
+import org.linagora.dao.ProcessData;
+import org.linagora.dao.TaskActiviti;
 import org.linagora.exception.ExceptionGeneratorActiviti;
 import org.linagora.parse.ActivitiParse;
 import org.springframework.web.multipart.MultipartFile;
@@ -47,10 +56,10 @@ public class ActivitiProcess {
 		}
 
 		try {
-			if(execute){
+			if (execute) {
 				String idNumber = saveAndExecute(myActivitiFile);
 				myActivitiFile.setIdNumber(idNumber);
-			}else{
+			} else {
 				saveBpmn(myActivitiFile);
 			}
 		} catch (Exception e) {
@@ -66,7 +75,8 @@ public class ActivitiProcess {
 		InputStream inputStream = new FileInputStream(bpmn.getFile());
 
 		RepositoryService repositoryService = processEngine.getRepositoryService();
-		repositoryService.createDeployment().addInputStream(bpmn.getName(), inputStream).deploy();
+		repositoryService.createDeployment().name(bpmn.getProcessId()).addInputStream(bpmn.getName(), inputStream)
+				.deploy();
 		return bpmn.getProcessId();
 	}
 
@@ -84,7 +94,8 @@ public class ActivitiProcess {
 		InputStream inputStream = new FileInputStream(bpmn.getFile());
 
 		RepositoryService repositoryService = processEngine.getRepositoryService();
-		repositoryService.createDeployment().addInputStream(bpmn.getName(), inputStream).deploy();
+		repositoryService.createDeployment().name(bpmn.getProcessId()).addInputStream(bpmn.getName(), inputStream)
+				.deploy();
 
 		// Start the processus
 		RuntimeService runtimeService = processEngine.getRuntimeService();
@@ -106,7 +117,7 @@ public class ActivitiProcess {
 		return gson.toJson(listForm);
 	}
 
-	public boolean completeTask(Map<String, Object> mapAttribute) throws ExceptionGeneratorActiviti {
+	public boolean completeUserTask(Map<String, Object> mapAttribute) throws ExceptionGeneratorActiviti {
 		ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
 		TaskService taskService = processEngine.getTaskService();
 
@@ -122,7 +133,7 @@ public class ActivitiProcess {
 		return true;
 	}
 
-	public boolean completeReiceive(String processId, String receiveTaskid) throws ExceptionGeneratorActiviti {
+	public boolean completeReiceiveTask(String processId, String receiveTaskid) throws ExceptionGeneratorActiviti {
 		try {
 			ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
 			RuntimeService runtimeService = processEngine.getRuntimeService();
@@ -139,6 +150,40 @@ public class ActivitiProcess {
 		}
 
 		return true;
+	}
 
+	public String dataReader() throws ExceptionGeneratorActiviti {
+		List<ProcessData> dataPrint = new ArrayList<ProcessData>();
+
+		ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
+		RuntimeService runtimeService = processEngine.getRuntimeService();
+		RepositoryService repositoryService = processEngine.getRepositoryService();
+
+		List<ProcessInstance> dataList = runtimeService.createProcessInstanceQuery().list();
+
+		for (ProcessInstance data : dataList) {
+			TaskActiviti taskType = TaskActiviti.RECEIVE_TASK;
+
+			Execution execution = runtimeService.createExecutionQuery().processInstanceId(data.getId())
+					.activityId(data.getActivityId()).singleResult();
+			ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
+					.processInstanceId(execution.getProcessInstanceId()).singleResult();
+			BpmnModel bpmnModel = repositoryService.getBpmnModel(processInstance.getProcessDefinitionId());
+			FlowElement flowElement = bpmnModel.getFlowElement(((DelegateExecution) execution).getCurrentActivityId());
+			if (flowElement instanceof ReceiveTask)
+				taskType = TaskActiviti.RECEIVE_TASK;
+			else if (flowElement instanceof UserTask)
+				taskType = TaskActiviti.USER_TASK;
+			else if (flowElement instanceof ManualTask)
+				taskType = TaskActiviti.MANUAL_TASK;
+			else if (flowElement instanceof ServiceTask)
+				taskType = TaskActiviti.SERVICE_TASK;
+			else
+				taskType = TaskActiviti.TASK;
+
+			dataPrint.add(
+					new ProcessData(data.getId(), data.getProcessDefinitionName(), taskType, data.getActivityId()));
+		}
+		return new Gson().toJson(dataPrint);
 	}
 }
