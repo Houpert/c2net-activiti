@@ -186,4 +186,20 @@ public class ActivitiProcess {
 		}
 		return new Gson().toJson(dataPrint);
 	}
+
+	public String listTaskFormMail(String email) throws ExceptionGeneratorActiviti {
+		ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
+		TaskService taskService = processEngine.getTaskService();
+
+		List<Form> listForm = new ArrayList<Form>();
+		for (Task task : taskService.createTaskQuery().list()) {
+			if (task.getAssignee() == null || task.getAssignee().equals(email)) {
+				FormData taskForm = processEngine.getFormService().getTaskFormData(task.getId());
+				List<Formly> formly = ActivitiFormGenerator.generateForm(task, taskForm);
+				listForm.add(new Form(task.getId(), formly));
+			}
+		}
+		Gson gson = new Gson();
+		return gson.toJson(listForm);
+	}
 }

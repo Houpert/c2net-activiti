@@ -13,7 +13,7 @@ public interface ServiceAction {
 
 	public String executeBpmn(String nameProcess) throws ExceptionGeneratorActiviti;
 
-	public String listTask() throws ExceptionGeneratorActiviti;
+	public String listTask(String email) throws ExceptionGeneratorActiviti;
 
 	public boolean completeTask(Map<String, Object> json) throws ExceptionGeneratorActiviti;
 

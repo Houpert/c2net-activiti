@@ -44,9 +44,9 @@ public class ServiceActionImpl implements ServiceAction {
 	}
 
 	/* Manage task side*/
-	@RequestMapping(value = "/task/list", method = RequestMethod.GET)
-	public String listTask() throws ExceptionGeneratorActiviti {
-		return activiti.listTaskForm();
+	@RequestMapping(value = "/task/list/email", method = RequestMethod.POST)
+	public String listTask(@RequestParam("email") String email) throws ExceptionGeneratorActiviti {
+		return activiti.listTaskFormMail(email);
 	}
 
 	@RequestMapping(value = "/task/complet", method = RequestMethod.POST)

@@ -29,7 +29,7 @@ public class ChannelActionImpl implements ServiceAction {
 	}
 
 	@Override
-	public String listTask() throws ExceptionGeneratorActiviti {
+	public String listTask(String email) throws ExceptionGeneratorActiviti {
 		// TODO Auto-generated method stub
 		return null;
 	}
