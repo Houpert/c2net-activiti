@@ -28,6 +28,8 @@
 		<xsl:copy-of select="@*[not(name() = 'camunda:class')]  | bpmn:documentation" />
 	</xsl:template>
 
+
+
 	<xsl:template name="makeExtensionElements">
 		<xsl:param name="nodes" />
 
@@ -53,6 +55,21 @@
 							</xsl:element>
 						</xsl:if>
 					</xsl:for-each>
+
+
+					<!-- TODO -->
+					<xsl:for-each select="node()">
+						<xsl:if test="name() = 'camunda:taskListener'">
+							<activiti:taskListener>
+								<xsl:copy-of select="@*"></xsl:copy-of>
+							</activiti:taskListener>
+						</xsl:if>
+					</xsl:for-each>
+
+					<!-- <activiti:taskListener> <xsl:copy-of select="@* | camunda:taskListener" 
+						/> </activiti:taskListener> -->
+
+
 
 					<xsl:for-each select="camunda:properties/node()">
 						<xsl:if test="name() = 'camunda:property'">
@@ -175,8 +192,7 @@
 						</xsl:if>
 
 						<!-- TASK -->
-						<!-- Task not define (sendTask, scriptTask, callActivity, 
-							subProcess) -->
+						<!-- Task not define (sendTask, scriptTask, callActivity, subProcess) -->
 						<!-- [EXPERIMENTAL] businessRuleTask -->
 
 						<xsl:if test="name() = 'bpmn:task'">
