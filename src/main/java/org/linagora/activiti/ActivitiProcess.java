@@ -162,7 +162,7 @@ public class ActivitiProcess {
 		List<ProcessInstance> dataList = runtimeService.createProcessInstanceQuery().list();
 
 		for (ProcessInstance data : dataList) {
-			TaskActiviti taskType = TaskActiviti.RECEIVE_TASK;
+			TaskActiviti taskType;
 
 			Execution execution = runtimeService.createExecutionQuery().processInstanceId(data.getId())
 					.activityId(data.getActivityId()).singleResult();
