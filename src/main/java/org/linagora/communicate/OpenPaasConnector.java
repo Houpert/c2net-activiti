@@ -29,6 +29,7 @@ public class OpenPaasConnector {
 	private String loginApiPath;
 	private String notificationApiPath;
 	private String calendarsApiPath;
+	private String comunityApiPath;
 
 	private String userId;
 	private String uiId;
@@ -43,7 +44,7 @@ public class OpenPaasConnector {
 	private NotificationUtility notificationUtility;
 	private CalendarUtility calendarUtility;
 
-	public OpenPaasConnector(){
+	public OpenPaasConnector() {
 		try {
 			PropertyFile propertyFile = new PropertyFile();
 			Properties prop = propertyFile.getProperties(configFilePath);
@@ -52,6 +53,7 @@ public class OpenPaasConnector {
 			loginApiPath = prop.getProperty("service.login");
 			notificationApiPath = prop.getProperty("service.notification");
 			calendarsApiPath = prop.getProperty("service.calendars");
+			comunityApiPath = prop.getProperty("service.community");
 
 			opu = new OpenPaasUser(prop.getProperty("user.username"), prop.getProperty("user.password"));
 
@@ -74,6 +76,8 @@ public class OpenPaasConnector {
 			return webServiceApi + calendarsApiPath + "/" + userId + "/events/" + uiId + ".ics?graceperiod=1";
 		case NOTIFICATION:
 			return webServiceApi + notificationApiPath;
+		case COMUNITY_MEMBER:
+			return webServiceApi + comunityApiPath + "/" + uiId + "/members";
 		default:
 			return null;
 		}
@@ -144,6 +148,10 @@ public class OpenPaasConnector {
 			notification.setAuthor(userId);
 			json = notification.generateJson();
 			break;
+		case COMUNITY_MEMBER:
+			uiId = (String) request;
+			type = TypeRequest.GET;
+
 		}
 		return opc.wsOpCall(client, getPath(action), json, type);
 	}

@@ -20,6 +20,8 @@ public class OpenPaasOrchestrator {
 					response = webResource.type(type).post(ClientResponse.class, json);
 				else if (request.equals(TypeRequest.PUT))
 					response = webResource.type(type).put(ClientResponse.class, json);
+				else if (request.equals(TypeRequest.GET))
+					response = webResource.type(type).get(ClientResponse.class);
 
 				if (response == null || response.getStatus() >= 210) {
 					throw new RuntimeException("Failed : HTTP error code : " + response.getStatus());

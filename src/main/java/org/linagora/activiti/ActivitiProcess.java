@@ -23,9 +23,13 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.form.FormData;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.IdentityLink;
+import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
 import org.linagora.activiti.form.Form;
 import org.linagora.activiti.form.Formly;
+import org.linagora.communicate.OpenPaasConnector;
+import org.linagora.dao.ActionActiviti;
 import org.linagora.dao.ActivitiDAO;
 import org.linagora.dao.ProcessData;
 import org.linagora.dao.TaskActiviti;
@@ -190,16 +194,34 @@ public class ActivitiProcess {
 	public String listTaskFormMail(String email) throws ExceptionGeneratorActiviti {
 		ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
 		TaskService taskService = processEngine.getTaskService();
-
 		List<Form> listForm = new ArrayList<Form>();
+
 		for (Task task : taskService.createTaskQuery().list()) {
-			if (task.getAssignee() == null || task.getAssignee().equals(email)) {
-				FormData taskForm = processEngine.getFormService().getTaskFormData(task.getId());
-				List<Formly> formly = ActivitiFormGenerator.generateForm(task, taskForm);
-				listForm.add(new Form(task.getId(), formly));
+			String groupId = null;
+
+			List<IdentityLink> links = taskService.getIdentityLinksForTask(task.getId());
+			for (IdentityLink link : links)
+				if (IdentityLinkType.CANDIDATE.equals(link.getType()))
+					groupId = link.getGroupId();
+
+			if (groupId == null && (task.getAssignee() == null || task.getAssignee().equals(email))) {
+				listForm.add(generateForm(processEngine, task));
+			} else if (groupId != null) {
+				OpenPaasConnector opc = new OpenPaasConnector();
+				String comunityInfo = opc.wsCallGenerator(ActionActiviti.COMUNITY_MEMBER, groupId);
+
+				if (comunityInfo.contains("\"" + email + "\""))
+					listForm.add(generateForm(processEngine, task));
 			}
 		}
+
 		Gson gson = new Gson();
 		return gson.toJson(listForm);
+	}
+
+	private Form generateForm(ProcessEngine processEngine, Task task) throws ExceptionGeneratorActiviti {
+		FormData taskForm = processEngine.getFormService().getTaskFormData(task.getId());
+		List<Formly> formly = ActivitiFormGenerator.generateForm(task, taskForm);
+		return new Form(task.getId(), formly);
 	}
 }
