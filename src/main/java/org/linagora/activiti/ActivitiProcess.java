@@ -167,6 +167,7 @@ public class ActivitiProcess {
 
 		for (ProcessInstance data : dataList) {
 			TaskActiviti taskType;
+			String assignee = null;
 
 			Execution execution = runtimeService.createExecutionQuery().processInstanceId(data.getId())
 					.activityId(data.getActivityId()).singleResult();
@@ -176,19 +177,32 @@ public class ActivitiProcess {
 			FlowElement flowElement = bpmnModel.getFlowElement(((DelegateExecution) execution).getCurrentActivityId());
 			if (flowElement instanceof ReceiveTask)
 				taskType = TaskActiviti.RECEIVE_TASK;
-			else if (flowElement instanceof UserTask)
+			else if (flowElement instanceof UserTask) {
 				taskType = TaskActiviti.USER_TASK;
-			else if (flowElement instanceof ManualTask)
+				assignee = getAssignee(((UserTask) flowElement));
+			} else if (flowElement instanceof ManualTask)
 				taskType = TaskActiviti.MANUAL_TASK;
 			else if (flowElement instanceof ServiceTask)
 				taskType = TaskActiviti.SERVICE_TASK;
 			else
 				taskType = TaskActiviti.TASK;
 
-			dataPrint.add(
-					new ProcessData(data.getId(), data.getProcessDefinitionName(), taskType, data.getActivityId()));
+			dataPrint.add(new ProcessData(data.getId(), data.getProcessDefinitionName(), taskType, data.getActivityId(),
+					assignee));
 		}
 		return new Gson().toJson(dataPrint);
+	}
+
+	private String getAssignee(UserTask userTask) {
+		try {
+			if (userTask.getAssignee() != null)
+				return userTask.getAssignee();
+			else if (userTask.getCandidateGroups() != null && userTask.getCandidateGroups().size() != 0)
+				return userTask.getCandidateGroups().toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	public String listTaskFormMail(String email) throws ExceptionGeneratorActiviti {
@@ -204,14 +218,18 @@ public class ActivitiProcess {
 				if (IdentityLinkType.CANDIDATE.equals(link.getType()))
 					groupId = link.getGroupId();
 
-			if (groupId == null && (task.getAssignee() == null || task.getAssignee().equals(email))) {
+			if (groupId != null) {
+				try {
+					OpenPaasConnector opc = new OpenPaasConnector();
+					String comunityInfo = opc.wsCallGenerator(ActionActiviti.COMUNITY_MEMBER, groupId);
+					if (comunityInfo.contains("\"" + email + "\""))
+						listForm.add(generateForm(processEngine, task));
+				} catch (Exception e) {
+					//Error during the get community member,
+					//No community found -> OpenPaas send an Error
+				}
+			} else if (task.getAssignee() == null || task.getAssignee().equals(email)) {
 				listForm.add(generateForm(processEngine, task));
-			} else if (groupId != null) {
-				OpenPaasConnector opc = new OpenPaasConnector();
-				String comunityInfo = opc.wsCallGenerator(ActionActiviti.COMUNITY_MEMBER, groupId);
-
-				if (comunityInfo.contains("\"" + email + "\""))
-					listForm.add(generateForm(processEngine, task));
 			}
 		}
 
