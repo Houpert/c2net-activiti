@@ -7,6 +7,7 @@ import java.util.Properties;
 import org.json.JSONObject;
 import org.linagora.dao.ActionActiviti;
 import org.linagora.dao.OpenPaasUser;
+import org.linagora.dao.openpaas.OpenPaasConfig;
 import org.linagora.dao.openpaas.TypeRequest;
 import org.linagora.dao.openpaas.notification.NotificationOP;
 import org.linagora.utility.PropertyFile;
@@ -25,66 +26,42 @@ import net.fortuna.ical4j.model.component.VEvent;
 public class OpenPaasConnector {
 	private final String configFilePath = "config/config.properties";
 
-	private String webServiceApi;
-	private String loginApiPath;
-	private String notificationApiPath;
-	private String calendarsApiPath;
-	private String comunityApiPath;
+	private OpenPaasConfig openPaasConfig;
 
 	private String userId;
 	private String uiId;
 
 	private final String type = "application/json";
-	private final OpenPaasOrchestrator opc = new OpenPaasOrchestrator();
-	private OpenPaasUser opu;
+	private final OpenPaasAPI opc = new OpenPaasAPI();
 
 	private WebResource webResource;
 	private ApacheHttpClient client;
-
-	private NotificationUtility notificationUtility;
-	private CalendarUtility calendarUtility;
 
 	public OpenPaasConnector() {
 		try {
 			PropertyFile propertyFile = new PropertyFile();
 			Properties prop = propertyFile.getProperties(configFilePath);
 
-			webServiceApi = prop.getProperty("service.webservice");
-			loginApiPath = prop.getProperty("service.login");
-			notificationApiPath = prop.getProperty("service.notification");
-			calendarsApiPath = prop.getProperty("service.calendars");
-			comunityApiPath = prop.getProperty("service.community");
+			openPaasConfig = new OpenPaasConfig(prop);
 
-			opu = new OpenPaasUser(prop.getProperty("user.username"), prop.getProperty("user.password"));
-
-			notificationUtility = new NotificationUtility();
-			calendarUtility = new CalendarUtility();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public String getWebServiceApi() {
-		return webServiceApi;
-	}
-
-	public String getPath(ActionActiviti action) {
+	private String getPath(ActionActiviti action) {
 		switch (action) {
 		case MAIL:
-			return webServiceApi; // TODO
+			return openPaasConfig.getWebServiceApi(); // TODO
 		case CALENDAR:
-			return webServiceApi + calendarsApiPath + "/" + userId + "/events/" + uiId + ".ics?graceperiod=1";
+			return openPaasConfig.getFullCalendarsApiPath() + "/" + userId + "/events/" + uiId + ".ics?graceperiod=1";
 		case NOTIFICATION:
-			return webServiceApi + notificationApiPath;
+			return openPaasConfig.getFullNotificationApiPath();
 		case COMUNITY_MEMBER:
-			return webServiceApi + comunityApiPath + "/" + uiId + "/members";
+			return openPaasConfig.getFullComunityApiPath() + "/" + uiId + "/members";
 		default:
 			return null;
 		}
-	}
-
-	public String getLoginApiPath() {
-		return webServiceApi + loginApiPath;
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -95,7 +72,7 @@ public class OpenPaasConnector {
 		attendeeList.add("user0@open-paas.org");
 		attendeeList.add("user10@open-paas.org");
 
-		Calendar cal = opc.getCalendarUtility().createCalendar("MyEventName", attendeeList, "admin@open-paas.org",
+		Calendar cal = CalendarUtility.createCalendar("MyEventName", attendeeList, "admin@open-paas.org",
 				"MyEventLocation");
 
 		opc.wsCallGenerator(ActionActiviti.CALENDAR, cal);
@@ -108,12 +85,12 @@ public class OpenPaasConnector {
 
 		client = ApacheHttpClient.create(config);
 		client.addFilter(auth);
-		webResource = client.resource(webServiceApi + ws);
+		webResource = client.resource(openPaasConfig.getWebServiceApi() + ws);
 	}
 
 	public ApacheHttpClient login(OpenPaasUser user) {
 		try {
-			prepareRequest(user, loginApiPath);
+			prepareRequest(user, openPaasConfig.getLoginApiPath());
 			ClientResponse response = webResource.type(type).post(ClientResponse.class, user.generateJson());
 
 			if (response.getStatus() != 200) {
@@ -130,7 +107,7 @@ public class OpenPaasConnector {
 	}
 
 	public String wsCallGenerator(ActionActiviti action, Object request) {
-		ApacheHttpClient client = login(opu);
+		ApacheHttpClient client = login(openPaasConfig.getOpenPaasUser());
 		String json = null;
 		TypeRequest type = TypeRequest.POST;
 		switch (action) {
@@ -151,8 +128,8 @@ public class OpenPaasConnector {
 		case COMUNITY_MEMBER:
 			uiId = (String) request;
 			type = TypeRequest.GET;
-
 		}
+
 		return opc.wsOpCall(client, getPath(action), json, type);
 	}
 
@@ -160,16 +137,7 @@ public class OpenPaasConnector {
 		return userId;
 	}
 
-	public NotificationUtility getNotificationUtility() {
-		return notificationUtility;
+	public OpenPaasConfig getOpenPaasConfig() {
+		return openPaasConfig;
 	}
-
-	public CalendarUtility getCalendarUtility() {
-		return calendarUtility;
-	}
-
-	public OpenPaasUser getOpu() {
-		return opu;
-	}
-
 }

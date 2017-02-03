@@ -2,6 +2,7 @@ package org.linagora.service.rest;
 
 import java.util.Map;
 
+import org.linagora.communicate.CalendarUtility;
 import org.linagora.communicate.OpenPaasConnector;
 import org.linagora.dao.ActionActiviti;
 import org.linagora.service.api.ServiceNotification;
@@ -33,7 +34,7 @@ public class ServiceNotificationsImpl implements ServiceNotification {
 	@RequestMapping(value = "/calendar/create", method = RequestMethod.POST)
 	public String createEventCalendar(@RequestBody Map<String, Object> map) throws Exception {
 		try {
-			Calendar cal = opc.getCalendarUtility().createCalendarFromJson(map, opc.getOpu().getUsername());
+			Calendar cal = CalendarUtility.createCalendarFromJson(map, opc.getOpenPaasConfig().getOpenPaasUser().getUsername());
 			return opc.wsCallGenerator(ActionActiviti.CALENDAR, cal);
 		} catch (Exception e) {
 			e.printStackTrace();

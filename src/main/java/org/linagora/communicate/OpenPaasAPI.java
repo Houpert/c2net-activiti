@@ -6,7 +6,7 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.client.apache.ApacheHttpClient;
 
-public class OpenPaasOrchestrator {
+public class OpenPaasAPI {
 
 	private final String type = "application/json";
 

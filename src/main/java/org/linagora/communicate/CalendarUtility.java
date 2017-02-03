@@ -32,9 +32,9 @@ public class CalendarUtility {
 	private static final String MAP_NAME = "name";
 	private static final String MAP_LOCATION = "location";
 	private static final String MAP_ATTENDEE = "attendee";
-	private final int ADD_HOURS = 2;
+	private static final int ADD_HOURS = 2;
 
-	public Calendar createCalendar(String name, List<String> attendeeList, String organizerName, String location)
+	public static Calendar createCalendar(String name, List<String> attendeeList, String organizerName, String location)
 			throws SocketException, ParseException, URISyntaxException {
 
 		// Default setting VCalendar
@@ -74,7 +74,7 @@ public class CalendarUtility {
 		return calendar;
 	}
 
-	public Calendar createCalendarFromJson(Map<String, Object> map, String organizerName) throws Exception {
+	public static Calendar createCalendarFromJson(Map<String, Object> map, String organizerName) throws Exception {
 		Calendar cal;
 		try {
 			String name = (String) map.get(MAP_NAME);
