@@ -1,5 +1,6 @@
 package org.linagora.service.rest;
 
+import org.linagora.dao.VariableData;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -13,6 +14,12 @@ public class ServiceTestFakeDemo {
 	public String test() {
 		System.out.println("Hello World GET");
 		return "Hello World GET";
+	}
+
+	@RequestMapping("/variable")
+	public String variable() {
+		VariableData res = new VariableData("Indice", "11");
+		return res.generateJson();
 	}
 
 	@RequestMapping(value = "/hello", method = RequestMethod.POST)
