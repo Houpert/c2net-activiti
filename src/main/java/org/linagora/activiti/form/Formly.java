@@ -12,9 +12,13 @@ public class Formly {
 	public Formly(String key, String type) {
 		super();
 		this.key = key;
-		this.type = type;
+
+		if (type.equals("number"))
+			this.type = "input";
+		else
+			this.type = type;
 	}
-	
+
 	public Formly(String key, String type, TemplateOptions templateOptions) {
 		this(key, type);
 		this.templateOptions = templateOptions;
@@ -22,41 +26,49 @@ public class Formly {
 
 	public Formly(String key, String type, TemplateOptions templateOptions, String defaultValue) {
 		this(key, type, templateOptions);
-		if(defaultValue != null)
+		if (defaultValue != null)
 			this.defaultValue = defaultValue;
 	}
-	
+
 	public Formly(String key, String type, String defaultValue) {
 		this(key, type);
-		if(defaultValue != null)
+		if (defaultValue != null)
 			this.defaultValue = defaultValue;
 	}
 
 	public String getKey() {
 		return key;
 	}
+
 	public void setKey(String key) {
 		this.key = key;
 	}
+
 	public String getType() {
 		return type;
 	}
+
 	public void setType(String type) {
 		this.type = type;
 	}
+
 	public String getDefaultValue() {
 		return defaultValue;
 	}
+
 	public void setDefaultValue(String defaultValue) {
 		this.defaultValue = defaultValue;
 	}
+
 	public TemplateOptions getTemplateOptions() {
 		return templateOptions;
 	}
+
 	public void setTemplateOptions(TemplateOptions templateOptions) {
 		this.templateOptions = templateOptions;
 	}
-	public String generateJson(){
+
+	public String generateJson() {
 		Gson gson = new Gson();
 		return gson.toJson(this);
 	}
