@@ -39,23 +39,7 @@ public class WebServiceTask implements JavaDelegate {
 		WebResource webResource = client.resource(urlStr);
 
 		if (isGet) {
-			String result = webResource.get(String.class);
-			try {
-				JSONObject jsonObj = new JSONObject(result);
-				VariableData vd = new VariableData(jsonObj.get("name").toString(), jsonObj.get("value").toString());
-				try {
-					double d = Double.parseDouble(vd.getValue());
-					System.out.println(d);
-					execution.setVariableLocal(vd.getName(), d);
-				} catch (NumberFormatException e) {
-					execution.setVariableLocal(vd.getName(), vd.getValue());
-				}
-
-			} catch (Exception e) {
-				// new Exception("The result of the get is not a valide data",
-				// e.getCause()).printStackTrace();
-			}
-
+			webResource.get(String.class);
 		} else {
 			webResource.accept("application/json").type("application/json").post(ClientResponse.class, jsonStr);
 		}

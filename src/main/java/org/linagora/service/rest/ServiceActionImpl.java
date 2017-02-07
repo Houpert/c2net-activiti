@@ -57,7 +57,13 @@ public class ServiceActionImpl implements ServiceAction {
 	@RequestMapping(value = "/task/receive", method = RequestMethod.POST)
 	public boolean executeReceiveTask(@RequestParam("processId") String processId,
 			@RequestParam("taskId") String receiveTaskId) throws ExceptionGeneratorActiviti {
-		return activiti.completeReiceiveTask(processId, receiveTaskId);
+		return activiti.completeReiceiveTask(processId, receiveTaskId, null);
+	}
+
+	@RequestMapping(value = "/task/receive/json", method = RequestMethod.POST)
+	public boolean executeReceiveTask(@RequestParam("processId") String processId,
+			@RequestParam("taskId") String receiveTaskId, @RequestParam("json") String json) throws ExceptionGeneratorActiviti {
+		return activiti.completeReiceiveTask(processId, receiveTaskId, json);
 	}
 	
 	/*All data*/

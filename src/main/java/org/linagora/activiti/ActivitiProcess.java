@@ -21,6 +21,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.form.FormData;
+import org.activiti.engine.impl.util.json.JSONObject;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.IdentityLink;
@@ -33,6 +34,7 @@ import org.linagora.dao.ActionActiviti;
 import org.linagora.dao.ActivitiDAO;
 import org.linagora.dao.ProcessData;
 import org.linagora.dao.TaskActiviti;
+import org.linagora.dao.VariableData;
 import org.linagora.exception.ExceptionGeneratorActiviti;
 import org.linagora.parse.ActivitiParse;
 import org.springframework.web.multipart.MultipartFile;
@@ -137,7 +139,8 @@ public class ActivitiProcess {
 		return true;
 	}
 
-	public boolean completeReiceiveTask(String processId, String receiveTaskid) throws ExceptionGeneratorActiviti {
+	public boolean completeReiceiveTask(String processId, String receiveTaskid, String json)
+			throws ExceptionGeneratorActiviti {
 		try {
 			ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
 			RuntimeService runtimeService = processEngine.getRuntimeService();
@@ -146,6 +149,22 @@ public class ActivitiProcess {
 
 			if (execution == null) {
 				throw new ActivitiObjectNotFoundException("Unable to find the receiveTask");
+			}
+
+			if (json != null) {
+				try {
+					JSONObject jsonObj = new JSONObject(json);
+					VariableData vd = new VariableData(jsonObj.get("name").toString(), jsonObj.get("value").toString());
+					try {
+						double d = Double.parseDouble(vd.getValue());
+						runtimeService.setVariableLocal(execution.getId(), vd.getName(), d);
+					} catch (NumberFormatException e) {
+						runtimeService.setVariableLocal(execution.getId(), vd.getName(), vd.getValue());
+					}
+
+				} catch (Exception e) {
+					new Exception("The json is malformed", e.getCause()).printStackTrace();
+				}
 			}
 
 			runtimeService.signal(execution.getId());
@@ -225,8 +244,8 @@ public class ActivitiProcess {
 					if (comunityInfo.contains("\"" + email + "\""))
 						listForm.add(generateForm(processEngine, task));
 				} catch (Exception e) {
-					//Error during the get community member,
-					//No community found -> OpenPaas send an Error
+					// Error during the get community member,
+					// No community found -> OpenPaas send an Error
 				}
 			} else if (task.getAssignee() == null || task.getAssignee().equals(email)) {
 				listForm.add(generateForm(processEngine, task));
