@@ -64,20 +64,6 @@ public class OpenPaasConnector {
 		}
 	}
 
-	public static void main(String[] args) throws Exception {
-		// USED for test
-		OpenPaasConnector opc = new OpenPaasConnector();
-
-		List<String> attendeeList = new ArrayList<String>();
-		attendeeList.add("user0@open-paas.org");
-		attendeeList.add("user10@open-paas.org");
-
-		Calendar cal = CalendarUtility.createCalendar("MyEventName", attendeeList, "admin@open-paas.org",
-				"MyEventLocation");
-
-		opc.wsCallGenerator(ActionActiviti.CALENDAR, cal);
-	}
-
 	private void prepareRequest(OpenPaasUser user, String ws) {
 		HTTPBasicAuthFilter auth = new HTTPBasicAuthFilter(user.getUsername(), user.getPassword());
 		ApacheHttpClientConfig config = new DefaultApacheHttpClientConfig();
@@ -88,7 +74,7 @@ public class OpenPaasConnector {
 		webResource = client.resource(openPaasConfig.getWebServiceApi() + ws);
 	}
 
-	public ApacheHttpClient login(OpenPaasUser user) {
+	public ApacheHttpClient login(OpenPaasUser user) throws Exception {
 		try {
 			prepareRequest(user, openPaasConfig.getLoginApiPath());
 			ClientResponse response = webResource.type(type).post(ClientResponse.class, user.generateJson());
@@ -106,7 +92,7 @@ public class OpenPaasConnector {
 		}
 	}
 
-	public String wsCallGenerator(ActionActiviti action, Object request) {
+	public String wsCallGenerator(ActionActiviti action, Object request) throws Exception {
 		ApacheHttpClient client = login(openPaasConfig.getOpenPaasUser());
 		String json = null;
 		TypeRequest type = TypeRequest.POST;
