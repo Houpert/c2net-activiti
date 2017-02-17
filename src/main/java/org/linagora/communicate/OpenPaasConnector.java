@@ -1,7 +1,5 @@
 package org.linagora.communicate;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
 import org.json.JSONObject;

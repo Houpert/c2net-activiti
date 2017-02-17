@@ -32,18 +32,29 @@ public class CalendarUtility {
 	private static final String MAP_NAME = "name";
 	private static final String MAP_LOCATION = "location";
 	private static final String MAP_ATTENDEE = "attendee";
-	private static final int ADD_HOURS = 2;
+	private static final String MAP_DAYS = "days";
 
-	public static Calendar createCalendar(String name, List<String> attendeeList, String organizerName, String location)
-			throws SocketException, ParseException, URISyntaxException {
+	private static final int DEFAULT_TIME_EVENT_HOURS = 2;
+	private static final int DEFAULT_ADD_DAYS = 0;
+	private static final int HOURS_DAY = 24;
+
+	public static Calendar createCalendar(String name, List<String> attendeeList, String organizerName, String location,
+			int daysAdded) throws SocketException, ParseException, URISyntaxException {
 
 		// Default setting VCalendar
 		Calendar calendar = new Calendar();
 		calendar.getProperties().add(Version.VERSION_2_0);
-
+		DateTime start;
+		DateTime end;
 		// Initialize date VEvent
-		DateTime start = new DateTime(DateManager.today());
-		DateTime end = new DateTime(DateManager.addHours(ADD_HOURS));
+		if (daysAdded != 0) {
+			start = new DateTime(DateManager.addHours(HOURS_DAY * daysAdded));
+			end = new DateTime(DateManager.addHours(HOURS_DAY * daysAdded + DEFAULT_TIME_EVENT_HOURS));
+		} else {
+			start = new DateTime(DateManager.today());
+			end = new DateTime(DateManager.addHours(DEFAULT_TIME_EVENT_HOURS));
+		}
+
 		CalendarBuilder builder = new CalendarBuilder();
 		TimeZoneRegistry registry = builder.getRegistry();
 		TimeZone tz = registry.getTimeZone("Europe/Berlin"); // TODO
@@ -81,11 +92,18 @@ public class CalendarUtility {
 			String location = (String) map.get(MAP_LOCATION);
 			List<String> attendeeList = (List<String>) map.get(MAP_ATTENDEE);
 
+			int hoursAdded;
+			try {
+				hoursAdded = (int) map.get(MAP_DAYS);
+			} catch (Exception e) {
+				hoursAdded = DEFAULT_ADD_DAYS;
+			}
+
 			if (name == null || attendeeList == null) {
 				throw new Exception("An event name or attendee list is needed");
 			}
 
-			cal = createCalendar(name, attendeeList, organizerName, location);
+			cal = createCalendar(name, attendeeList, organizerName, location, hoursAdded);
 			return cal;
 		} catch (Exception e) {
 			throw e;
