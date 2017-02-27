@@ -8,9 +8,9 @@ import org.activiti.engine.form.FormData;
 import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.form.FormType;
 import org.activiti.engine.task.Task;
-import org.linagora.activiti.form.Formly;
-import org.linagora.activiti.form.FormlyType;
-import org.linagora.activiti.form.TemplateOptions;
+import org.linagora.dao.openpaas.form.Formly;
+import org.linagora.dao.openpaas.form.FormlyType;
+import org.linagora.dao.openpaas.form.TemplateOptions;
 import org.linagora.exception.ExceptionGeneratorActiviti;
 
 public class ActivitiFormGenerator {

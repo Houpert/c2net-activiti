@@ -1,4 +1,4 @@
-package org.linagora.activiti.form;
+package org.linagora.dao.openpaas.form;
 
 public enum FormlyType {
 

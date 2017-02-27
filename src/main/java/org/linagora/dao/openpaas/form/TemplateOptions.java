@@ -1,4 +1,4 @@
-package org.linagora.activiti.form;
+package org.linagora.dao.openpaas.form;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,15 +13,19 @@ public class TemplateOptions {
 	private String label;
 	private String placeholder;
 	private String description;
+	private String className;
 	private boolean required = false;
 	private List<Options> options;
 
+	/*For the hidden form*/
 	public TemplateOptions(String label, String type){
 		this.label = label;
 		this.type = type;
 	}
 
 	public TemplateOptions(FormProperty propertyForm, FormlyType type) {
+		this.className = "label-formly";
+
 		if(propertyForm.getName() != null)
 			this.label = propertyForm.getName();
 		else

@@ -27,14 +27,14 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
-import org.linagora.activiti.form.Form;
-import org.linagora.activiti.form.Formly;
 import org.linagora.communicate.OpenPaasConnector;
 import org.linagora.dao.ActionActiviti;
 import org.linagora.dao.ActivitiDAO;
 import org.linagora.dao.ProcessData;
 import org.linagora.dao.TaskActiviti;
 import org.linagora.dao.VariableData;
+import org.linagora.dao.openpaas.form.Form;
+import org.linagora.dao.openpaas.form.Formly;
 import org.linagora.exception.ExceptionGeneratorActiviti;
 import org.linagora.parse.ActivitiParse;
 import org.springframework.web.multipart.MultipartFile;
@@ -117,7 +117,8 @@ public class ActivitiProcess {
 		for (Task task : taskService.createTaskQuery().list()) {
 			FormData taskForm = processEngine.getFormService().getTaskFormData(task.getId());
 			List<Formly> formly = ActivitiFormGenerator.generateForm(task, taskForm);
-			listForm.add(new Form(task.getId(), formly));
+			String processName = task.getProcessDefinitionId().split(":")[0];
+			listForm.add(new Form(processName, task.getId(), formly));
 		}
 		Gson gson = new Gson();
 		return gson.toJson(listForm);
@@ -224,7 +225,7 @@ public class ActivitiProcess {
 		return null;
 	}
 
-	public String listTaskFormMail(String email) throws ExceptionGeneratorActiviti {
+	public String listTask(String email) throws ExceptionGeneratorActiviti {
 		ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
 		TaskService taskService = processEngine.getTaskService();
 		List<Form> listForm = new ArrayList<Form>();
@@ -257,8 +258,9 @@ public class ActivitiProcess {
 	}
 
 	private Form generateForm(ProcessEngine processEngine, Task task) throws ExceptionGeneratorActiviti {
+		String processName = task.getProcessDefinitionId().split(":")[0];
 		FormData taskForm = processEngine.getFormService().getTaskFormData(task.getId());
 		List<Formly> formly = ActivitiFormGenerator.generateForm(task, taskForm);
-		return new Form(task.getId(), formly);
+		return new Form(processName, task.getId(), formly);
 	}
 }

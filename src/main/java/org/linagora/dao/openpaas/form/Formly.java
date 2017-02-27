@@ -1,6 +1,9 @@
-package org.linagora.activiti.form;
+package org.linagora.dao.openpaas.form;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 public class Formly {
 
@@ -9,14 +12,28 @@ public class Formly {
 	private String defaultValue;
 	public TemplateOptions templateOptions;
 
+	@SuppressWarnings("unused")
+	private NgModelElAttrs ngModelElAttrs; /* Value depend of type */
+
 	public Formly(String key, String type) {
 		super();
 		this.key = key;
 
-		if (type.equals("number"))
+		if (type.equals("number")) /*
+									 * Special case if number, TemplateOptions
+									 * manage this has input
+									 */
 			this.type = "input";
 		else
 			this.type = type;
+
+		/* Class assignement */
+		if (type.equals("input"))
+			ngModelElAttrs = new NgModelElAttrs(FormlyClass.INPUT.getClassStr());
+		else if (type.equals("select"))
+			ngModelElAttrs = new NgModelElAttrs(FormlyClass.SELECT.getClassStr());
+		else if (type.equals("number"))
+			ngModelElAttrs = new NgModelElAttrs(FormlyClass.NUMBER.getClassStr());
 	}
 
 	public Formly(String key, String type, TemplateOptions templateOptions) {
@@ -69,7 +86,21 @@ public class Formly {
 	}
 
 	public String generateJson() {
-		Gson gson = new Gson();
+		final GsonBuilder builder = new GsonBuilder();
+		builder.excludeFieldsWithoutExposeAnnotation();
+		final Gson gson = builder.create();
 		return gson.toJson(this);
 	}
+
+}
+
+class NgModelElAttrs {
+
+	@SerializedName("class")
+	public String classForTemplate;
+
+	public NgModelElAttrs(String value) {
+		classForTemplate = value;
+	}
+
 }
