@@ -1,9 +1,6 @@
 package org.linagora.communicate;
 
-import java.net.SocketException;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -39,7 +36,9 @@ public class CalendarUtility {
 	private static final int HOURS_DAY = 24;
 
 	public static Calendar createCalendar(String name, List<String> attendeeList, String organizerName, String location,
-			int daysAdded) throws SocketException, ParseException, URISyntaxException {
+			int daysAdded) throws IllegalArgumentException {
+
+		checkerVariable(name, attendeeList, organizerName);
 
 		// Default setting VCalendar
 		Calendar calendar = new Calendar();
@@ -47,7 +46,7 @@ public class CalendarUtility {
 		DateTime start;
 		DateTime end;
 		// Initialize date VEvent
-		if (daysAdded != 0) {
+		if (daysAdded > 0) {
 			start = new DateTime(DateManager.addHours(HOURS_DAY * daysAdded));
 			end = new DateTime(DateManager.addHours(HOURS_DAY * daysAdded + DEFAULT_TIME_EVENT_HOURS));
 		} else {
@@ -66,7 +65,8 @@ public class CalendarUtility {
 		Uid uid = new Uid(UUID.randomUUID().toString());
 		event.getProperties().add(uid);
 		event.getProperties().add(Transp.OPAQUE);
-		event.getProperties().add(new Location(location));
+		if (location != null)
+			event.getProperties().add(new Location(location));
 
 		// Generate user to the event
 		Organizer organizer = new Organizer(URI.create("mailto:" + organizerName));
@@ -83,6 +83,19 @@ public class CalendarUtility {
 		}
 		calendar.getComponents().add(event);
 		return calendar;
+	}
+
+	private static void checkerVariable(String name, List<String> attendeeList, String organizerName)
+			throws IllegalArgumentException {
+		if (name == null) {
+			throw new IllegalArgumentException("Calendar Event Name is null");
+		} else if (attendeeList == null) {
+			throw new IllegalArgumentException("Calendar Attendee List is null");
+		}else if(attendeeList.isEmpty()){
+			throw new IllegalArgumentException("Attendee List can't be empty");
+		} else if (organizerName == null) {
+			throw new IllegalArgumentException("Calendar Organizer Name is null");
+		}
 	}
 
 	public static Calendar createCalendarFromJson(Map<String, Object> map, String organizerName) throws Exception {

@@ -162,7 +162,6 @@ public class ActivitiProcess {
 					} catch (NumberFormatException e) {
 						runtimeService.setVariableLocal(execution.getId(), vd.getName(), vd.getValue());
 					}
-
 				} catch (Exception e) {
 					new Exception("The json is malformed", e.getCause()).printStackTrace();
 				}
