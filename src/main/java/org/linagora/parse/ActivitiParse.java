@@ -47,8 +47,11 @@ public class ActivitiParse {
 			this.xslName = xslPath;
 	}
 
-	public ActivitiDAO parseXMLToActivitiExecutable(MultipartFile multipart) {
+	public ActivitiDAO parseXMLToActivitiExecutable(MultipartFile multipart) throws Exception {
 		try {
+			if(multipart == null)
+				throw new Exception("The parsed file can't be null");
+
 			InputStream xslFile = getClass().getResourceAsStream(xslPath + xslName);
 			File xmlFile = getFileFromeMultipartFile(multipart);
 
@@ -61,10 +64,9 @@ public class ActivitiParse {
 			xmlFile.delete();
 
 			if (xmlFileAfterDone != null)
-
 				return new ActivitiDAO(multipart.getOriginalFilename(), xmlFileAfterDone);
 		} catch (IOException | TransformerException e) {
-			LoggerManager.loggerTrace(e);
+			throw e;
 		}
 		return null;
 	}

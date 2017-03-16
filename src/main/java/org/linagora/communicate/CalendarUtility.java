@@ -1,6 +1,7 @@
 package org.linagora.communicate;
 
 import java.net.URI;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -45,13 +46,14 @@ public class CalendarUtility {
 		calendar.getProperties().add(Version.VERSION_2_0);
 		DateTime start;
 		DateTime end;
+		Date date = new Date();
 		// Initialize date VEvent
 		if (daysAdded > 0) {
-			start = new DateTime(DateManager.addHours(HOURS_DAY * daysAdded));
-			end = new DateTime(DateManager.addHours(HOURS_DAY * daysAdded + DEFAULT_TIME_EVENT_HOURS));
+			start = new DateTime(DateManager.addHours(date, HOURS_DAY * daysAdded));
+			end = new DateTime(DateManager.addHours(date, HOURS_DAY * daysAdded + DEFAULT_TIME_EVENT_HOURS));
 		} else {
-			start = new DateTime(DateManager.today());
-			end = new DateTime(DateManager.addHours(DEFAULT_TIME_EVENT_HOURS));
+			start = new DateTime(date);
+			end = new DateTime(DateManager.addHours(date, DEFAULT_TIME_EVENT_HOURS));
 		}
 
 		CalendarBuilder builder = new CalendarBuilder();
