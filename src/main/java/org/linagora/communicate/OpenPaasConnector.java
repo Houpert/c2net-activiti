@@ -30,7 +30,6 @@ public class OpenPaasConnector {
 	private String uiId;
 
 	private final String type = "application/json";
-	private final OpenPaasAPI opc = new OpenPaasAPI();
 
 	private WebResource webResource;
 	private ApacheHttpClient client;
@@ -47,7 +46,7 @@ public class OpenPaasConnector {
 		}
 	}
 
-	private String getPath(ActionActiviti action) {
+	private String getPath(ActionActiviti action) throws Exception {
 		switch (action) {
 		case MAIL:
 			return openPaasConfig.getWebServiceApi(); // TODO
@@ -58,7 +57,8 @@ public class OpenPaasConnector {
 		case COMUNITY_MEMBER:
 			return openPaasConfig.getFullComunityApiPath() + "/" + uiId + "/members";
 		default:
-			return null;
+			throw new Exception("WebService path should exist");
+
 		}
 	}
 
@@ -112,9 +112,12 @@ public class OpenPaasConnector {
 		case COMUNITY_MEMBER:
 			uiId = (String) request;
 			type = TypeRequest.GET;
+		default :
+			 throw new Exception("WebService path should exist");
 		}
 
-		return opc.wsOpCall(client, getPath(action), json, type);
+
+		return OpenPaasAPI.wsOpCall(client, getPath(action), json, type);
 	}
 
 	public String getUserId() {

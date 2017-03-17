@@ -8,10 +8,13 @@ import com.sun.jersey.client.apache.ApacheHttpClient;
 
 public class OpenPaasAPI {
 
-	private final String type = "application/json";
+	private final static String type = "application/json";
 
-	public String wsOpCall(ApacheHttpClient client, String webServicePath, String json, TypeRequest request) {
+	public static String wsOpCall(ApacheHttpClient client, String webServicePath, String json, TypeRequest request) throws Exception {
 		try {
+			if(request == null)
+				throw new Exception("TypeRequest can't be null");
+
 			if (client != null) {
 				WebResource webResource = client.resource(webServicePath);
 				ClientResponse response = null;
@@ -30,7 +33,6 @@ public class OpenPaasAPI {
 			}
 			throw new RuntimeException("Failed : HTTP Login");
 		} catch (Exception e) {
-			e.printStackTrace();
 			throw e;
 		}
 	}

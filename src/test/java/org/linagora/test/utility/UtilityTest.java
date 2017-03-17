@@ -13,7 +13,7 @@ import org.springframework.boot.test.context.TestComponent;
 public class UtilityTest {
 
 	@Test
-	public void testDate() {
+	public void addHours_AddOneHours_isOk() {
 		Date now = new Date();
 		Date futur = DateManager.addHours(now, 1);
 		Assert.assertTrue(now.before(futur));
@@ -22,7 +22,7 @@ public class UtilityTest {
 	}
 
 	@Test
-	public void testPropertyNullName() {
+	public void getProperties_ConfigFileIsNull_ExceptionThrown() {
 		try {
 			PropertyFile propManager = new PropertyFile();
 			propManager.getProperties(null);
@@ -33,7 +33,7 @@ public class UtilityTest {
 	}
 
 	@Test
-	public void testProperty() throws Exception {
+	public void getProperties_ParamIsValid_DataPropertiesIsOk() throws Exception {
 		PropertyFile propManager = new PropertyFile();
 		Properties prop = propManager.getProperties("config/config.properties");
 		String pathOpLogin = "/api/login";

@@ -27,7 +27,7 @@ public class NotificationTest {
 	private final static String defaultTitle = "MyActivitiNotification";
 
 	@Test
-	public void testNotificationTargetNull() throws Exception {
+	public void createNotification_TargetNull_ExceptionThrown() throws Exception {
 		try {
 			NotificationUtility.createNotification(link, author, null);
 			Assert.fail("Should throw exception when Target is null");
@@ -37,7 +37,7 @@ public class NotificationTest {
 	}
 
 	@Test
-	public void testNotificationAuthorNull() throws Exception {
+	public void createNotification_AuthorNull_ExceptionThrown() throws Exception {
 		try {
 			NotificationUtility.createNotification(link, null, target);
 			Assert.fail("Should throw exception when Author is null");
@@ -47,7 +47,7 @@ public class NotificationTest {
 	}
 
 	@Test
-	public void testNotificationFakeLinkNull() throws Exception {
+	public void createNotification_LinkIsFake_ExceptionThrown() throws Exception {
 		try {
 			String fakeLink = "fake link";
 			NotificationUtility.createNotification(fakeLink, author, target);
@@ -58,7 +58,7 @@ public class NotificationTest {
 	}
 
 	@Test
-	public void testNotificationLinkNull() throws Exception {
+	public void createNotification_LinkNull_ExceptionThrown() throws Exception {
 		try {
 			NotificationUtility.createNotification(null, author, target);
 			Assert.fail("Should throw exception when Link is null");
@@ -68,7 +68,7 @@ public class NotificationTest {
 	}
 
 	@Test
-	public void testNotificationCreate() throws IllegalArgumentException, MalformedURLException {
+	public void createNotification_ParamValid_isCreate() throws IllegalArgumentException, MalformedURLException {
 		List<NotificationTargetOP> targetNotification = new ArrayList<NotificationTargetOP>();
 		targetNotification.add(new NotificationTargetOP(NotificationObjectTypeOP.USER, target));
 

@@ -19,10 +19,7 @@ public class Formly {
 		super();
 		this.key = key;
 
-		if (type.equals("number")) /*
-									 * Special case if number, TemplateOptions
-									 * manage this has input
-									 */
+		if (type.equals("number"))
 			this.type = "input";
 		else
 			this.type = type;

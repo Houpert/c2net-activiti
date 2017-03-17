@@ -40,7 +40,6 @@ public class CalendarUtility {
 			int daysAdded) throws IllegalArgumentException {
 
 		checkerVariable(name, attendeeList, organizerName);
-
 		// Default setting VCalendar
 		Calendar calendar = new Calendar();
 		calendar.getProperties().add(Version.VERSION_2_0);

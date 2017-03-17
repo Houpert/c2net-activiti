@@ -89,6 +89,8 @@ public class ActivitiParse {
 	}
 
 	public String generateParsedFileName(String fileName) {
+		if(fileName == null)
+			return null;
 		return DEFAULT_NAME_PARSING + fileName + EXTENSION_BPMN;
 	}
 }

@@ -23,7 +23,7 @@ public class ParseXmlBpmnTest {
 	private final static String xmlValideFileToParse = "test_bpmn_valid";
 	private final static String xmlBpmnFileParse = "Parse_test_bpmn_valid.bpmn20.xml";
 
-	private final static String xmlErrorFileToParse = "test_bpmn_error";
+	private final static String wrongXmlFileToParse = "test_bpmn_wrong_xml";
 	private final static String noXmlErrorFile = "test_no_xml_file";
 
 	
@@ -32,7 +32,6 @@ public class ParseXmlBpmnTest {
 	@Before
 	public void setUp() {
 		aParse = new ActivitiParse();
-
 	}
 
 	@After
@@ -48,12 +47,11 @@ public class ParseXmlBpmnTest {
 	}
 
 	@Test
-	public void testValideParse() throws Exception {
+	public void generateParsedFileName_ParameterOk_isParsed() throws Exception {
 		File fileToMultipart = new File(xmlPathInput + xmlValideFileToParse);
 		
 		MultipartFile myMultipartFile = getMockCommonsMultipartFile(fileToMultipart);
 		ActivitiDAO myBpmn = aParse.parseXMLToActivitiExecutable(myMultipartFile);
-
 		myBpmn.getFile().deleteOnExit();
 		Assert.assertNotNull(myBpmn);
 		Assert.assertEquals(myBpmn.getName(), aParse.generateParsedFileName(xmlValideFileToParse));
@@ -65,9 +63,9 @@ public class ParseXmlBpmnTest {
 	}
 
 	@Test
-	public void testWrongParsing() throws Exception {
+	public void parseXMLToActivitiExecutable_ParsedFileErrorXml_ExceptionThrown() throws Exception {
 		try {
-			File fileToMultipart = new File(xmlPathInput + xmlErrorFileToParse);
+			File fileToMultipart = new File(xmlPathInput + wrongXmlFileToParse);
 
 			MultipartFile myMultipartFile = getMockCommonsMultipartFile(fileToMultipart);
 			aParse.parseXMLToActivitiExecutable(myMultipartFile);
@@ -79,7 +77,7 @@ public class ParseXmlBpmnTest {
 	}
 
 	@Test
-	public void testNoXmlFileParsing() throws Exception {
+	public void parseXMLToActivitiExecutable_NoXmlFileToParse_ExceptionThrown() throws Exception {
 		try {
 			File fileToMultipart = new File(xmlPathInput + noXmlErrorFile);
 
@@ -92,12 +90,36 @@ public class ParseXmlBpmnTest {
 	}
 
 	@Test
-	public void testNullFileParsing() throws Exception {
+	public void parseXMLToActivitiExecutable_ParsedFileIsEmpty_ExceptionThrown() throws Exception {
 		try {
 			aParse.parseXMLToActivitiExecutable(null);
 			Assert.fail();
 		} catch (Exception e) {
 			Assert.assertTrue(e.getMessage().contains("The parsed file can't be null"));
 		}
+	}
+
+	@Test
+	public void generateParsedFileName_FileNameValid_IsOk(){
+		String name = "MyTestName";
+		String newName= aParse.generateParsedFileName(name);
+		Assert.assertTrue(newName.contains("Parse_"));
+		Assert.assertTrue(newName.contains(name));
+		Assert.assertTrue(newName.contains(".bpmn20.xml"));
+	}
+
+	@Test
+	public void generateParsedFileName_FileNameIsEmpty_IsOk(){
+		String name = "";
+		String newName= aParse.generateParsedFileName(name);
+		Assert.assertTrue(newName.contains("Parse_"));
+		Assert.assertTrue(newName.contains(name));
+		Assert.assertTrue(newName.contains(".bpmn20.xml"));
+	}
+
+	@Test
+	public void generateParsedFileName_FileNameIsNull_IsNull(){
+		String newName= aParse.generateParsedFileName(null);
+		Assert.assertEquals(null, newName);
 	}
 }

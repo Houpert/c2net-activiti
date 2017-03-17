@@ -28,14 +28,14 @@ public class CalendarTest {
 			"attendee3@test.com");
 
 	@Test
-	public void testCreateCalendarLocationNull() throws Exception {
+	public void createCalendar_LocationNull_LocationIsEmpty() throws Exception {
 		Calendar calendarValidity = CalendarUtility.createCalendar(summaryEvent, attendeeList, organizerName, null,
 				daysAdded);
 		checkCalendar(calendarValidity, true);
 	}
 
 	@Test
-	public void testCreateCalendarOrganizerNameNull() throws Exception {
+	public void createCalendar_OrganizerNameNull_ExceptionThrown() throws Exception {
 		try {
 			CalendarUtility.createCalendar(summaryEvent, attendeeList, null, location, daysAdded);
 			Assert.fail("Should throw exception when organizer event is null");
@@ -45,7 +45,7 @@ public class CalendarTest {
 	}
 
 	@Test
-	public void testCreateCalendarAttendeeListIsEmpty() throws Exception {
+	public void createCalendar_AttendeeListEmpty_ExceptionThrown() throws Exception {
 		try {
 			List<String> attendeeListEmpty = new ArrayList<String>();
 			CalendarUtility.createCalendar(summaryEvent, attendeeListEmpty, organizerName, location, daysAdded);
@@ -56,7 +56,7 @@ public class CalendarTest {
 	}
 
 	@Test
-	public void testCreateCalendarAttendeeListNull() throws Exception {
+	public void createCalendar_AttendeeListNull_ExceptionThrown() throws Exception {
 		try {
 			CalendarUtility.createCalendar(summaryEvent, null, organizerName, location, daysAdded);
 			Assert.fail("Should throw exception when name event is null");
@@ -66,7 +66,7 @@ public class CalendarTest {
 	}
 
 	@Test
-	public void testCreateCalendarEventNameNull() throws Exception {
+	public void createCalendar_EventNameNull_ExceptionThrown() throws Exception {
 		try {
 			CalendarUtility.createCalendar(null, attendeeList, organizerName, location, daysAdded);
 			Assert.fail("Should throw exception when name event is null");
@@ -76,7 +76,7 @@ public class CalendarTest {
 	}
 
 	@Test
-	public void testCreateCalendar() throws Exception {
+	public void createCalendar_ParamValid_isCreate() throws Exception {
 		Calendar calendarValidity = CalendarUtility.createCalendar(summaryEvent, attendeeList, organizerName, location,
 				daysAdded);
 
