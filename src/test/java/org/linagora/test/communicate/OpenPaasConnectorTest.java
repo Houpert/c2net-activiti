@@ -1,13 +1,10 @@
 package org.linagora.test.communicate;
 
-import java.lang.reflect.Field;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.linagora.communicate.OpenPaasConnector;
 import org.linagora.dao.openpaas.OpenPaasConfig;
-import org.linagora.test.populate.MockitoGeneratorOpenPaasApi;
 import org.springframework.boot.test.context.TestComponent;
 
 @TestComponent
@@ -45,8 +42,4 @@ public class OpenPaasConnectorTest {
 		Assert.assertEquals(opWsPath+opLoginPath, opc.getFullLoginApiPath());
 		Assert.assertEquals(opWsPath+opNotificationPath, opc.getFullNotificationApiPath());
 	}
-
-	//TODO How to manage to add test in this class
-
-
 }

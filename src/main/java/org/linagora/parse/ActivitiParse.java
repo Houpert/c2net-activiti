@@ -23,7 +23,6 @@ public class ActivitiParse {
 	private static final String DEFAULT_NAME_PARSING = "Parse_";
 	private static final String EXTENSION_BPMN = ".bpmn20.xml";
 
-	private static final String DEFAULT_XML_PROCESS_PATH = "/processes/";
 	private static final String DEFAULT_XSL_PATH = "/parse/";
 	private static final String DEFAULT_XSL_NAME = "ActivitiXLS.xml";
 
@@ -49,7 +48,7 @@ public class ActivitiParse {
 
 	public ActivitiDAO parseXMLToActivitiExecutable(MultipartFile multipart) throws Exception {
 		try {
-			if(multipart == null)
+			if (multipart == null)
 				throw new Exception("The parsed file can't be null");
 
 			InputStream xslFile = getClass().getResourceAsStream(xslPath + xslName);
@@ -83,13 +82,17 @@ public class ActivitiParse {
 
 	private File parseBpmnFile(InputStream xslFile, File xmlFile, File xmlFileAfterDone)
 			throws TransformerException, IOException {
-		Transformer transformer = TransformerFactory.newInstance().newTransformer(new StreamSource(xslFile));
-		transformer.transform(new StreamSource(xmlFile), new StreamResult(xmlFileAfterDone));
-		return xmlFileAfterDone;
+		try {
+			Transformer transformer = TransformerFactory.newInstance().newTransformer(new StreamSource(xslFile));
+			transformer.transform(new StreamSource(xmlFile), new StreamResult(xmlFileAfterDone));
+			return xmlFileAfterDone;
+		} catch (Exception e) {
+			throw e;
+		}
 	}
 
 	public String generateParsedFileName(String fileName) {
-		if(fileName == null)
+		if (fileName == null)
 			return null;
 		return DEFAULT_NAME_PARSING + fileName + EXTENSION_BPMN;
 	}
