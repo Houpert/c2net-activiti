@@ -5,15 +5,10 @@ import java.util.Date;
 
 public class DateManager {
 
-	public static Date addHours(int hours){
+	public static Date addHours(Date date, int hours){
 		Calendar calDate = Calendar.getInstance();
-		calDate.setTime(new Date());
+		calDate.setTime(date);
 		calDate.add(Calendar.HOUR, hours);
 		return calDate.getTime();
 	}
-	
-	public static Date today(){
-		return new Date();
-	}
-	
 }
