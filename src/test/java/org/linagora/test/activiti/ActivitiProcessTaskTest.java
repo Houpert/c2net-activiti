@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.impl.util.json.JSONArray;
@@ -18,7 +17,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.linagora.activiti.ActivitiProcess;
 import org.linagora.dao.ActivitiDAO;
-import org.linagora.dao.openpaas.form.Form;
 import org.linagora.exception.ExceptionGeneratorActiviti;
 import org.linagora.service.ApplicationWorkflowReader;
 import org.springframework.boot.SpringApplication;
@@ -39,7 +37,8 @@ public class ActivitiProcessTaskTest {
 	private final static String form_string_bpmn = "form_string";
 	private final static String form_userMail_bpmn = "form_userMail";
 	private final static String form_number_bpmn = "form_number";
-
+	private final static String form_gateway_bpmn = "form_gateway";
+	private final static String form_dkms_bpmn = "form_dkms";
 
 	private final static boolean isExecuted = true;
 
@@ -49,6 +48,20 @@ public class ActivitiProcessTaskTest {
 	private final static String fakeUser = "fake@test.com";
 
 	private final static String taskIdMapKey = "taskId";
+
+	private final static String processIdMapKey = "processId";
+	private final static String DMKS_IdTask = "idTask";
+
+	@BeforeClass
+	public static void setUp() throws FileNotFoundException{
+		application = SpringApplication.run(ApplicationWorkflowReader.class);
+		changeSystemOutputTest();
+	}
+
+	@AfterClass
+	public static void tearDown(){
+		application.close();
+	}
 
 	private MultipartFile getMockCommonsMultipartFile(File file) throws IOException {
 		FileInputStream inputFile = new FileInputStream(file.getAbsolutePath());
@@ -63,14 +76,15 @@ public class ActivitiProcessTaskTest {
 		System.setErr(nullOut);
 	}
 
-	@BeforeClass
-	public static void setUp() throws FileNotFoundException {
-		application = SpringApplication.run(ApplicationWorkflowReader.class);
-	}
+	public void completeTask(JSONArray jsonArray, boolean isString) throws ExceptionGeneratorActiviti {
+		Map<String, Object> mapAttribute = new HashMap<String, Object>();
+		mapAttribute.put(taskIdMapKey, jsonArray.getJSONObject(0).get(taskIdMapKey));
+		if (isString)
+			mapAttribute.put("string", "string");
+		else
+			mapAttribute.put("integer", 50);
 
-	@AfterClass
-	public static void tearDown() {
-		application.stop();
+		aProcess.completeUserTask(mapAttribute);
 	}
 
 	public ActivitiDAO checkActivitiDao(String jsonActiviti, String fileName, boolean isExecute) {
@@ -86,32 +100,29 @@ public class ActivitiProcessTaskTest {
 		return activitiData;
 	}
 
+	private void checkJsonArray(JSONArray jsonarray, int expectedSize, boolean isFake) {
+		Assert.assertEquals(expectedSize, jsonarray.length());
+		if (!isFake) {
+			Assert.assertNotNull(jsonarray.getJSONObject(0));
+			Assert.assertNotNull(jsonarray.getJSONObject(0).get(taskIdMapKey));
+		}
+	}
+
 	@Test
 	public void completeUserTask_executeFormString_TaskFindAndComplete()
 			throws ExceptionGeneratorActiviti, IOException {
 		try {
-			File file = new File(xmlPathInput + form_string_bpmn);
-			MultipartFile multipartFile = getMockCommonsMultipartFile(file);
-
+			MultipartFile multipartFile = getMockCommonsMultipartFile(new File(xmlPathInput + form_string_bpmn));
 			aProcess.initBpmnIoToActiviti(multipartFile, isExecuted);
-			String jsonListTask = aProcess.listTask(fakeUser);
 
+			String jsonListTask = aProcess.listTask(testUser);
 			Assert.assertNotNull(jsonListTask);
 
 			JSONArray jsonarray = new JSONArray(jsonListTask);
+			checkJsonArray(jsonarray, 1, false);
+			completeTask(jsonarray, true);
 
-			Assert.assertNotNull(jsonarray.getJSONObject(0));
-			Assert.assertNotNull(jsonarray.getJSONObject(0).get(taskIdMapKey));
-			Assert.assertEquals(1, jsonarray.length());
-
-			Map<String, Object> mapAttribute = new HashMap<String, Object>();
-			mapAttribute.put(taskIdMapKey, jsonarray.getJSONObject(0).get(taskIdMapKey));
-			mapAttribute.put("string", "testString");
-
-			aProcess.completeUserTask(mapAttribute);
-			jsonListTask = aProcess.listTask(fakeUser);
-
-			Assert.assertEquals(0, new JSONArray(jsonListTask).length());
+			Assert.assertEquals(0, new JSONArray(aProcess.listTask(testUser)).length());
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail();
@@ -119,68 +130,115 @@ public class ActivitiProcessTaskTest {
 	}
 
 	@Test
-	public void completeUserTask_executeFormNumber_TaskFindAndComplete() throws ExceptionGeneratorActiviti, IOException {
+	public void completeUserTask_executeFormNumber_TaskFindAndComplete()
+			throws ExceptionGeneratorActiviti, IOException {
 		try {
-			File file = new File(xmlPathInput + form_number_bpmn);
-			MultipartFile multipartFile = getMockCommonsMultipartFile(file);
+			MultipartFile multipartFile = getMockCommonsMultipartFile(new File(xmlPathInput + form_number_bpmn));
 			aProcess.initBpmnIoToActiviti(multipartFile, isExecuted);
 
 			String jsonListTask = aProcess.listTask(testUser);
-
 			Assert.assertNotNull(jsonListTask);
 
 			JSONArray jsonarray = new JSONArray(jsonListTask);
+			checkJsonArray(jsonarray, 1, false);
+			completeTask(jsonarray, false);
 
-			Assert.assertEquals(1, jsonarray.length());
-			Assert.assertNotNull(jsonarray.getJSONObject(0).get(taskIdMapKey));
-
-			Map<String, Object> mapAttribute = new HashMap<String, Object>();
-			mapAttribute.put(taskIdMapKey, jsonarray.getJSONObject(0).get(taskIdMapKey));
-			mapAttribute.put("integer", 50);
-			aProcess.completeUserTask(mapAttribute);
-
-			jsonListTask = aProcess.listTask(testUser);
-			jsonarray = new JSONArray(jsonListTask);
-			Assert.assertEquals(0, jsonarray.length());
+			Assert.assertEquals(0, new JSONArray(aProcess.listTask(testUser)).length());
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail();
 		}
 	}
-	
+
 	@Test
 	public void listTask_checkMailList_FilterOkAndExecute() throws ExceptionGeneratorActiviti, IOException {
 		try {
-			
-			//TODO check user list
-			File file = new File(xmlPathInput + form_userMail_bpmn);
-			MultipartFile multipartFile = getMockCommonsMultipartFile(file);
+
+			// TODO check user list
+			MultipartFile multipartFile = getMockCommonsMultipartFile(new File(xmlPathInput + form_userMail_bpmn));
 			aProcess.initBpmnIoToActiviti(multipartFile, isExecuted);
-			
+
 			String jsonListTask = aProcess.listTask(testUser);
 			Assert.assertNotNull(jsonListTask);
-			
+			JSONArray jsonarray = new JSONArray(jsonListTask);
+			checkJsonArray(jsonarray, 1, false);
+
 			String jsonListTaskFake = aProcess.listTask(fakeUser);
 			Assert.assertNotNull(jsonListTaskFake);
-
-			JSONArray jsonarray = new JSONArray(jsonListTask);
-
-			Assert.assertEquals(1, jsonarray.length());
-			Assert.assertNotNull(jsonarray.getJSONObject(0).get(taskIdMapKey));
-			
 			JSONArray jsonarrayFake = new JSONArray(jsonListTaskFake);
+			checkJsonArray(jsonarrayFake, 0, true);
 
-			Assert.assertEquals(0, jsonarrayFake.length());
-			
-			Map<String, Object> mapAttribute = new HashMap<String, Object>();
-			mapAttribute.put(taskIdMapKey, jsonarray.getJSONObject(0).get(taskIdMapKey));
-			mapAttribute.put("string", "string");
-			aProcess.completeUserTask(mapAttribute);
+			completeTask(jsonarray, true);
 
-			jsonListTask = aProcess.listTask(testUser);
+			Assert.assertEquals(0, new JSONArray(aProcess.listTask(testUser)).length());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail();
+		}
+	}
+
+	@Test
+	public void completeReiceiveTask_executeGateway_wayOne() throws ExceptionGeneratorActiviti, IOException {
+		try {
+			MultipartFile multipartFile = getMockCommonsMultipartFile(new File(xmlPathInput + form_gateway_bpmn));
+			aProcess.initBpmnIoToActiviti(multipartFile, isExecuted);
+			String jsonList = aProcess.dataReader();
+			JSONArray jsonarray = new JSONArray(jsonList);
+			Assert.assertEquals(1, jsonarray.length());
+
+			boolean result = aProcess.completeReiceiveTask(jsonarray.getJSONObject(0).get(processIdMapKey).toString(),
+					jsonarray.getJSONObject(0).get(DMKS_IdTask).toString(),
+					"{\"name\" : \"Indice\" , \"value\" : 0.8}");
+			Assert.assertTrue(result);
+
+			String jsonListTask = aProcess.listTask(testUser);
 			jsonarray = new JSONArray(jsonListTask);
-			Assert.assertEquals(0, jsonarray.length());
+			checkJsonArray(jsonarray, 1, false);
+			completeTask(jsonarray, true);
 
+			Assert.assertEquals(0, new JSONArray(aProcess.listTask(testUser)).length());
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail();
+		}
+	}
+
+	@Test
+	public void completeReiceiveTask_executeGateway_wayTwo() throws ExceptionGeneratorActiviti, IOException {
+		try {
+			MultipartFile multipartFile = getMockCommonsMultipartFile(new File(xmlPathInput + form_gateway_bpmn));
+			aProcess.initBpmnIoToActiviti(multipartFile, isExecuted);
+			String jsonList = aProcess.dataReader();
+			JSONArray jsonarray = new JSONArray(jsonList);
+			Assert.assertEquals(1, jsonarray.length());
+
+			boolean result = aProcess.completeReiceiveTask(jsonarray.getJSONObject(0).get(processIdMapKey).toString(),
+					jsonarray.getJSONObject(0).get(DMKS_IdTask).toString(),
+					"{\"name\" : \"Indice\" , \"value\" : 1.8}");
+
+			Assert.assertTrue(result);
+			Assert.assertEquals(0, new JSONArray(aProcess.listTask(testUser)).length());
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail();
+		}
+	}
+
+	@Test
+	public void completeReiceiveTask_dmksExecution_DKMSDone() throws ExceptionGeneratorActiviti, IOException {
+		try {
+			MultipartFile multipartFile = getMockCommonsMultipartFile(new File(xmlPathInput + form_dkms_bpmn));
+			aProcess.initBpmnIoToActiviti(multipartFile, isExecuted);
+			String jsonList = aProcess.dataReader();
+			JSONArray jsonarray = new JSONArray(jsonList);
+			Assert.assertEquals(1, jsonarray.length());
+
+			boolean result = aProcess.completeReiceiveTask(jsonarray.getJSONObject(0).get(processIdMapKey).toString(),
+					jsonarray.getJSONObject(0).get(DMKS_IdTask).toString(), null);
+
+			Assert.assertTrue(result);
+			Assert.assertEquals(0, new JSONArray(aProcess.listTask(testUser)).length());
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail();

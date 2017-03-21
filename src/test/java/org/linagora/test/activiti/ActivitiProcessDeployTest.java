@@ -42,6 +42,17 @@ public class ActivitiProcessDeployTest {
 
 	private final static ActivitiProcess aProcess = new ActivitiProcess();
 
+	@BeforeClass
+	public static void setUp() throws FileNotFoundException {
+		application = SpringApplication.run(ApplicationWorkflowReader.class);
+		changeSystemOutputTest();
+	}
+
+	@AfterClass
+	public static void tearDown() {
+		application.close();
+	}
+
 	private MultipartFile getMockCommonsMultipartFile(File file) throws IOException {
 		FileInputStream inputFile = new FileInputStream(file.getAbsolutePath());
 		MockMultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "multipart/form-data",
@@ -53,17 +64,6 @@ public class ActivitiProcessDeployTest {
 		OutputStream output = new FileOutputStream("/dev/null");
 		PrintStream nullOut = new PrintStream(output);
 		System.setErr(nullOut);
-	}
-
-	@BeforeClass
-	public static void setUp() throws FileNotFoundException {
-		application = SpringApplication.run(ApplicationWorkflowReader.class);
-		changeSystemOutputTest();
-	}
-
-	@AfterClass
-	public static void tearDown() {
-		application.stop();
 	}
 
 	public void checkActivitiDao(String jsonActiviti, String fileName, boolean isExecute) {
