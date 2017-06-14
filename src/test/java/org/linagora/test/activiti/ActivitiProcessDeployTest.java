@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintStream;
 
 import org.junit.AfterClass;
@@ -61,8 +60,7 @@ public class ActivitiProcessDeployTest {
 	}
 
 	public static void changeSystemOutputTest() throws FileNotFoundException {
-		OutputStream output = new FileOutputStream("/dev/null");
-		PrintStream nullOut = new PrintStream(output);
+		PrintStream nullOut = new PrintStream(new FileOutputStream("/dev/null"));
 		System.setErr(nullOut);
 	}
 
@@ -81,10 +79,9 @@ public class ActivitiProcessDeployTest {
 	public void initBpmnIoToActiviti_BpmnExecution_IsOnlyParsed() throws ExceptionGeneratorActiviti, IOException {
 		try {
 			boolean isExecuted = false;
-
-			File file = new File(xmlPathInput + bpmn_valid);
-			MultipartFile multipartFile = getMockCommonsMultipartFile(file);
+			MultipartFile multipartFile = getMockCommonsMultipartFile(new File(xmlPathInput + bpmn_valid));
 			String myActivitiJson = aProcess.initBpmnIoToActiviti(multipartFile, isExecuted);
+
 			checkActivitiDao(myActivitiJson, bpmn_valid, isExecuted);
 		} catch (Exception e) {
 			Assert.fail();
@@ -96,8 +93,7 @@ public class ActivitiProcessDeployTest {
 		try {
 			boolean isExecuted = true;
 
-			File file = new File(xmlPathInput + bpmn_valid);
-			MultipartFile multipartFile = getMockCommonsMultipartFile(file);
+			MultipartFile multipartFile = getMockCommonsMultipartFile(new File(xmlPathInput + bpmn_valid));
 			String myActivitiJson = aProcess.initBpmnIoToActiviti(multipartFile, isExecuted);
 			checkActivitiDao(myActivitiJson, bpmn_valid, isExecuted);
 		} catch (Exception e) {
@@ -110,9 +106,8 @@ public class ActivitiProcessDeployTest {
 			throws ExceptionGeneratorActiviti, IOException {
 		try {
 			boolean isExecuted = true;
-			File file = new File(xmlPathInput + bpmn_wrong_xml);
-			MultipartFile multipartFile = getMockCommonsMultipartFile(file);
 
+			MultipartFile multipartFile = getMockCommonsMultipartFile(new File(xmlPathInput + bpmn_wrong_xml));
 			aProcess.initBpmnIoToActiviti(multipartFile, isExecuted);
 			Assert.fail();
 		} catch (Exception e) {
@@ -125,8 +120,7 @@ public class ActivitiProcessDeployTest {
 		try {
 			boolean isExecuted = true;
 
-			File file = new File(xmlPathInput + no_xml_file);
-			MultipartFile multipartFile = getMockCommonsMultipartFile(file);
+			MultipartFile multipartFile = getMockCommonsMultipartFile(new File(xmlPathInput + no_xml_file));
 			aProcess.initBpmnIoToActiviti(multipartFile, isExecuted);
 			Assert.fail();
 		} catch (Exception e) {
@@ -138,9 +132,8 @@ public class ActivitiProcessDeployTest {
 	public void initBpmnIoToActiviti_ErrorInBpmnId_UnableToExecute() throws ExceptionGeneratorActiviti, IOException {
 		try {
 			boolean isExecuted = true;
-			File file = new File(xmlPathInput + bpmn_error_wrong_id);
-			MultipartFile multipartFile = getMockCommonsMultipartFile(file);
 
+			MultipartFile multipartFile = getMockCommonsMultipartFile(new File(xmlPathInput + bpmn_error_wrong_id));
 			aProcess.initBpmnIoToActiviti(multipartFile, isExecuted);
 			Assert.fail();
 		} catch (Exception e) {
@@ -152,9 +145,8 @@ public class ActivitiProcessDeployTest {
 	public void initBpmnIoToActiviti_BpmnNoExecutable_UnableToExecute() throws ExceptionGeneratorActiviti, IOException {
 		try {
 			boolean isExecuted = true;
-			File file = new File(xmlPathInput + bpmn_no_executable);
-			MultipartFile multipartFile = getMockCommonsMultipartFile(file);
 
+			MultipartFile multipartFile = getMockCommonsMultipartFile(new File(xmlPathInput + bpmn_no_executable));
 			aProcess.initBpmnIoToActiviti(multipartFile, isExecuted);
 			Assert.fail();
 		} catch (Exception e) {
@@ -165,9 +157,8 @@ public class ActivitiProcessDeployTest {
 	@Test
 	public void saveBpmn_SaveBpmnInRepositoryService_IsDeploy() throws ExceptionGeneratorActiviti, IOException {
 		try {
-			File file = new File(xmlPathOutput + parse_bpmn_valid);
-			String processid = aProcess.saveBpmn(new ActivitiDAO("test_bpmn_valid", file));
-
+			String processid = aProcess
+					.saveBpmn(new ActivitiDAO("test_bpmn_valid", new File(xmlPathOutput + parse_bpmn_valid)));
 			Assert.assertNotNull(processid);
 		} catch (Exception e) {
 			Assert.fail();
@@ -177,8 +168,8 @@ public class ActivitiProcessDeployTest {
 	@Test
 	public void saveAndExecute_NoParsedValidXMml_ProcessIsDeploy() throws ExceptionGeneratorActiviti, IOException {
 		try {
-			File file = new File(xmlPathInput + bpmn_valid);
-			String processId = aProcess.saveAndExecute(new ActivitiDAO("test_bpmn_valid", file));
+			String processId = aProcess
+					.saveAndExecute(new ActivitiDAO("test_bpmn_valid", new File(xmlPathInput + bpmn_valid)));
 			Assert.assertNotNull(processId);
 		} catch (Exception e) {
 			Assert.fail();

@@ -13,7 +13,6 @@ public class OpenPaasConnectorTest {
 	OpenPaasConnector opConnect = new OpenPaasConnector();
 	
 	//Param from the file src/main/resources/config/config.properties
-	String opWsPath = "http://localhost:8080";
 	String opLoginPath = "/api/login";
 	String opNotificationPath = "/api/notifications";
 	String opCalendarPath = "/dav/api/calendars";
@@ -27,14 +26,15 @@ public class OpenPaasConnectorTest {
 	@Test
 	public void openPaasConnector_VerifyInit_ParamOk() {
 		OpenPaasConfig opc = opConnect.getOpenPaasConfig();
-
-		Assert.assertEquals(opWsPath, opc.getWebServiceApi());
+		String opWsPath = opc.getWebServiceApi();
+		
+		Assert.assertNotNull(opWsPath);
 		Assert.assertEquals(opLoginPath, opc.getLoginApiPath());
 		Assert.assertEquals(opNotificationPath, opc.getNotificationApiPath());
 		Assert.assertEquals(opCalendarPath, opc.getCalendarsApiPath());
 		Assert.assertEquals(opCommunityPath, opc.getComunityApiPath());
 		
-		Assert.assertEquals("admin@open-paas.org", opc.getOpenPaasUser().getUsername());
+		Assert.assertNotNull(opc.getOpenPaasUser().getUsername());
 		Assert.assertEquals("secret", opc.getOpenPaasUser().getPassword());
 
 		Assert.assertEquals(opWsPath+opCalendarPath, opc.getFullCalendarsApiPath());

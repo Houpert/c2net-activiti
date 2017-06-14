@@ -1,4 +1,4 @@
-package org.linagora.activiti;
+package org.linagora.activiti.service;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;

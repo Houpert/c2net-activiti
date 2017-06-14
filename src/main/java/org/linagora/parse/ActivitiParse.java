@@ -23,6 +23,8 @@ public class ActivitiParse {
 	private static final String DEFAULT_NAME_PARSING = "Parse_";
 	private static final String EXTENSION_BPMN = ".bpmn20.xml";
 
+	private static final String DEFFAULT_XSL_PATH = "/eslap/component/src/parse/";
+	
 	private static final String DEFAULT_XSL_PATH = "/parse/";
 	private static final String DEFAULT_XSL_NAME = "ActivitiXLS.xml";
 
@@ -65,6 +67,7 @@ public class ActivitiParse {
 			if (xmlFileAfterDone != null)
 				return new ActivitiDAO(multipart.getOriginalFilename(), xmlFileAfterDone);
 		} catch (IOException | TransformerException e) {
+			LoggerManager.loggerTrace(e);
 			throw e;
 		}
 		return null;

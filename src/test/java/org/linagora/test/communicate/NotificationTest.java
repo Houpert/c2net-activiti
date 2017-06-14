@@ -49,8 +49,7 @@ public class NotificationTest {
 	@Test
 	public void createNotification_LinkIsFake_ExceptionThrown() throws Exception {
 		try {
-			String fakeLink = "fake link";
-			NotificationUtility.createNotification(fakeLink, author, target);
+			NotificationUtility.createNotification("fakeLink", author, target);
 			Assert.fail("Should throw exception when Link is wrong");
 		} catch (MalformedURLException e) {
 			Assert.assertTrue(e.toString().contains("java.net.MalformedURLException"));

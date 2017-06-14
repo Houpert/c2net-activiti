@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -71,8 +70,7 @@ public class ActivitiProcessTaskTest {
 	}
 
 	public static void changeSystemOutputTest() throws FileNotFoundException {
-		OutputStream output = new FileOutputStream("/dev/null");
-		PrintStream nullOut = new PrintStream(output);
+		PrintStream nullOut = new PrintStream(new FileOutputStream("/dev/null"));
 		System.setErr(nullOut);
 	}
 
@@ -153,8 +151,6 @@ public class ActivitiProcessTaskTest {
 	@Test
 	public void listTask_checkMailList_FilterOkAndExecute() throws ExceptionGeneratorActiviti, IOException {
 		try {
-
-			// TODO check user list
 			MultipartFile multipartFile = getMockCommonsMultipartFile(new File(xmlPathInput + form_userMail_bpmn));
 			aProcess.initBpmnIoToActiviti(multipartFile, isExecuted);
 
@@ -215,7 +211,7 @@ public class ActivitiProcessTaskTest {
 
 			boolean result = aProcess.completeReiceiveTask(jsonarray.getJSONObject(0).get(processIdMapKey).toString(),
 					jsonarray.getJSONObject(0).get(DMKS_IdTask).toString(),
-					"{\"name\" : \"Indice\" , \"value\" : 1.8}");
+					"{\"name\" : \"Indice\" , \"value\" : 80}");
 
 			Assert.assertTrue(result);
 			Assert.assertEquals(0, new JSONArray(aProcess.listTask(testUser)).length());
