@@ -18,17 +18,13 @@
 
 	<xsl:template name="makeNodeData">
 		<xsl:param name="nodes" />
-
 		<xsl:if test="@camunda:class">
 			<xsl:attribute name="activiti:class">
 				<xsl:value-of select="@camunda:class" />
 			</xsl:attribute>
 		</xsl:if>
-
 		<xsl:copy-of select="@*[not(name() = 'camunda:class')]  | bpmn:documentation" />
 	</xsl:template>
-
-
 
 	<xsl:template name="makeExtensionElements">
 		<xsl:param name="nodes" />
@@ -66,11 +62,6 @@
 						</xsl:if>
 					</xsl:for-each>
 
-					<!-- <activiti:taskListener> <xsl:copy-of select="@* | camunda:taskListener" 
-						/> </activiti:taskListener> -->
-
-
-
 					<xsl:for-each select="camunda:properties/node()">
 						<xsl:if test="name() = 'camunda:property'">
 							<xsl:element name="activiti:field">
@@ -93,6 +84,9 @@
 			</xsl:if>
 		</xsl:for-each>
 	</xsl:template>
+
+
+
 
 	<xsl:template match="bpmn:definitions">
 

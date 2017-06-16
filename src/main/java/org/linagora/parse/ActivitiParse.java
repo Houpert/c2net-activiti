@@ -26,7 +26,7 @@ public class ActivitiParse {
 	private static final String DEFFAULT_XSL_PATH = "/eslap/component/src/parse/";
 	
 	private static final String DEFAULT_XSL_PATH = "/parse/";
-	private static final String DEFAULT_XSL_NAME = "ActivitiXLS.xml";
+	private static final String DEFAULT_XSL_NAME = "ActivitiXSL.xml";
 
 	private String xslPath;
 	private String xslName;
