@@ -15,6 +15,19 @@
 		<xsl:copy-of select="bpmn:documentation" />
 	</xsl:template>
 
+	<!--<xsl:template name="makeNodeData">
+		<xsl:param name="nodes" />
+		<xsl:if test="@camunda:class">
+			<xsl:attribute name="activiti:class">org.linagora.activiti.service.<xsl:value-of select="@camunda:class" /></xsl:attribute>
+		</xsl:if>
+		<xsl:copy-of select="@*[not(name() = 'camunda:class')]  | bpmn:documentation" />
+	</xsl:template>-->
+
+	<!--
+	componentName
+	url
+	 -->
+
 	<xsl:template name="makeNodeData">
 		<xsl:param name="nodes" />
 		<xsl:if test="@camunda:class">

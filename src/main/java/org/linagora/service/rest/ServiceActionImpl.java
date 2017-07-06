@@ -10,6 +10,7 @@ import java.util.Map;
 import org.linagora.activiti.ActivitiProcess;
 import org.linagora.dao.cnet.ReceiveTaskData;
 import org.linagora.dao.cnet.UserEmail;
+import org.linagora.dao.cnet.VariableActiviti;
 import org.linagora.dao.cnet.WorkflowData;
 import org.linagora.exception.ExceptionGeneratorActiviti;
 import org.linagora.service.api.ServiceAction;
@@ -86,7 +87,6 @@ public class ServiceActionImpl implements ServiceAction {
 		return activiti.listTask(email);
 	}
 
-
 	@RequestMapping(value = "/task/complet", method = RequestMethod.POST)
 	public boolean completeTask(@RequestBody Map<String, Object> map) throws ExceptionGeneratorActiviti {
 		return activiti.completeUserTask(map);
@@ -102,6 +102,17 @@ public class ServiceActionImpl implements ServiceAction {
 	public boolean executeReceiveTask(@RequestParam("processId") String processId,
 			@RequestParam("taskId") String receiveTaskId, @RequestParam("json") String json) throws ExceptionGeneratorActiviti {
 		return activiti.completeReiceiveTask(processId, receiveTaskId, json);
+	}
+
+	@RequestMapping(value = "/task/dkms", method = RequestMethod.POST)
+	public boolean executeAllReceiveTask() throws ExceptionGeneratorActiviti {
+		return activiti.completeAllReiceiveTask(null);
+	}
+	@RequestMapping(value = "/task/dkms/gson", method = RequestMethod.POST)
+	public boolean executeAllReceiveTask(@RequestBody VariableActiviti vData) throws ExceptionGeneratorActiviti {
+		String json="{\"name\":\""+vData.getName()+"\", \"value\":\""+vData.getValue()+"\"}";
+
+		return activiti.completeAllReiceiveTask(json);
 	}
 
 	/*C2net Process*/

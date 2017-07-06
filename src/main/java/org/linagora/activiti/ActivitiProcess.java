@@ -175,6 +175,29 @@ public class ActivitiProcess {
 		return true;
 	}
 
+	public boolean completeAllReiceiveTask(String json) throws ExceptionGeneratorActiviti {
+		boolean taskComplete = false;
+		ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
+		RuntimeService runtimeService = processEngine.getRuntimeService();
+		RepositoryService repositoryService = processEngine.getRepositoryService();
+
+		List<ProcessInstance> dataList = runtimeService.createProcessInstanceQuery().list();
+
+		for (ProcessInstance data : dataList) {
+			Execution execution = runtimeService.createExecutionQuery().processInstanceId(data.getId())
+					.activityId(data.getActivityId()).singleResult();
+			ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
+					.processInstanceId(execution.getProcessInstanceId()).singleResult();
+			BpmnModel bpmnModel = repositoryService.getBpmnModel(processInstance.getProcessDefinitionId());
+			FlowElement flowElement = bpmnModel.getFlowElement(((DelegateExecution) execution).getCurrentActivityId());
+			if (flowElement instanceof ReceiveTask) {
+				completeReiceiveTask(data.getId(), data.getActivityId(), json);
+				taskComplete = true;
+			}
+		}
+		return taskComplete;
+	}
+
 	public String dataReader() throws ExceptionGeneratorActiviti {
 		List<ProcessData> dataPrint = new ArrayList<ProcessData>();
 

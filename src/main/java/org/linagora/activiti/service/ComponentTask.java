@@ -5,8 +5,6 @@ import java.util.Properties;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
-import org.activiti.engine.impl.util.json.JSONObject;
-import org.linagora.dao.VariableData;
 import org.linagora.utility.PropertyFile;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +22,7 @@ public class ComponentTask implements JavaDelegate {
 
 	public void execute(DelegateExecution execution) throws Exception {
 		getComponentService();
-		boolean hasParam = true;
+		boolean isGet = false;
 		String jsonStr = null;
 		String componentNameStr = null;
 
@@ -37,13 +35,13 @@ public class ComponentTask implements JavaDelegate {
 		try {
 			jsonStr = (String) json.getValue(execution);
 		} catch (Exception e) {
-			hasParam = false;
+			isGet = true;
 		}
 
 		Client client = Client.create();
-		WebResource webResource = client.resource(componentService+componentNameStr);
+		WebResource webResource = client.resource(componentService + componentNameStr);
 
-		if (hasParam) {
+		if (isGet) {
 			webResource.get(String.class);
 		} else {
 			webResource.accept("application/json").type("application/json").post(ClientResponse.class, jsonStr);
