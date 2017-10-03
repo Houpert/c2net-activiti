@@ -1,11 +1,15 @@
 package org.linagora.activiti.service;
 
+import java.util.Map;
 import java.util.Properties;
 
+import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
+import org.json.JSONObject;
 import org.linagora.utility.PropertyFile;
+import org.linagora.utility.ServiceUtility;
 import org.springframework.stereotype.Component;
 
 import com.sun.jersey.api.client.Client;
@@ -34,10 +38,13 @@ public class ComponentTask implements JavaDelegate {
 
 		try {
 			jsonStr = (String) json.getValue(execution);
+			JSONObject jsonObj = new JSONObject(jsonStr);
+			jsonObj.put("processData", ServiceUtility.getVariableMessage(execution));
+			jsonStr = jsonObj.toString();
 		} catch (Exception e) {
+
 			isGet = true;
 		}
-
 		Client client = Client.create();
 		WebResource webResource = client.resource(componentService + componentNameStr);
 
