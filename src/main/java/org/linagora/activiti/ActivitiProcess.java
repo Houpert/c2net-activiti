@@ -187,7 +187,6 @@ public class ActivitiProcess {
 
 	public boolean completeReiceiveTask(String processId, String receiveTaskid, String json)
 			throws ExceptionGeneratorActiviti {
-		boolean doReceiveTask = false;
 
 		try {
 			ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
@@ -218,7 +217,7 @@ public class ActivitiProcess {
 			throw new ExceptionGeneratorActiviti("Unable to find the ProcessId or ReceiveTaskId");
 		}
 
-		return doReceiveTask;
+		return true;
 	}
 
 	public boolean completeAllReiceiveTask(String json) throws ExceptionGeneratorActiviti {
