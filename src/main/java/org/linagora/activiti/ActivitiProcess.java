@@ -172,6 +172,8 @@ public class ActivitiProcess {
 				} catch (Exception e) {
 					new Exception("The json is malformed", e.getCause()).printStackTrace();
 				}
+			}else{
+				doReceiveTask = true;
 			}
 
 			if (doReceiveTask)
@@ -236,7 +238,7 @@ public class ActivitiProcess {
 			FlowElement flowElement = bpmnModel.getFlowElement(((DelegateExecution) execution).getCurrentActivityId());
 			if (flowElement instanceof ReceiveTask) {
 				String taskName = flowElement.getName();
-				//String taskId = data.getActivityId();
+				// String taskId = data.getActivityId();
 				completeReiceiveTaskDKMS(data.getId(), data.getActivityId(), json, taskName);
 				taskComplete = true;
 			}
