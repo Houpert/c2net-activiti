@@ -53,7 +53,7 @@ public class ServiceActionImpl implements ServiceAction {
 		return activiti.executeBpmn(nameProcess);
 	}
 
-	/*C2NET Context*/
+	/* C2NET Context */
 	@RequestMapping(value = "/parse/orchestrate", method = RequestMethod.POST)
 	public String generateBpmn(@RequestBody WorkflowData workflowData) throws ExceptionGeneratorActiviti, IOException {
 		String xmlstring = workflowData.getXmlstring();
@@ -69,18 +69,19 @@ public class ServiceActionImpl implements ServiceAction {
 	}
 
 	private MultipartFile getMockCommonsMultipartFile(File file) throws IOException {
-		FileInputStream inputFile = new FileInputStream(file.getAbsolutePath());  
-		MockMultipartFile multipartFile = new MockMultipartFile("bpmn_"+file.getName(), file.getName(), "multipart/form-data", inputFile);
+		FileInputStream inputFile = new FileInputStream(file.getAbsolutePath());
+		MockMultipartFile multipartFile = new MockMultipartFile("bpmn_" + file.getName(), file.getName(),
+				"multipart/form-data", inputFile);
 		return multipartFile;
 	}
 
-	/* Manage task side*/
+	/* Manage task side */
 	@RequestMapping(value = "/task/list", method = RequestMethod.POST)
 	public String listTask(@RequestParam("email") String email) throws ExceptionGeneratorActiviti {
 		return activiti.listTask(email);
 	}
 
-	/*C2NET Context*/
+	/* C2NET Context */
 	@RequestMapping(value = "/task/list/mail", method = RequestMethod.POST)
 	public String listTask(@RequestBody UserEmail emailData) throws ExceptionGeneratorActiviti {
 		String email = emailData.getEmail();
@@ -100,31 +101,38 @@ public class ServiceActionImpl implements ServiceAction {
 
 	@RequestMapping(value = "/task/receive/json", method = RequestMethod.POST)
 	public boolean executeReceiveTask(@RequestParam("processId") String processId,
-			@RequestParam("taskId") String receiveTaskId, @RequestParam("json") String json) throws ExceptionGeneratorActiviti {
+			@RequestParam("taskId") String receiveTaskId, @RequestParam("json") String json)
+			throws ExceptionGeneratorActiviti {
 		return activiti.completeReiceiveTask(processId, receiveTaskId, json);
+	}
+
+	@RequestMapping(value = "/task/dkms/test", method = RequestMethod.POST)
+	public boolean executeAllReceiveTask( @RequestParam("json") String json) throws ExceptionGeneratorActiviti {
+		return activiti.completeAllReiceiveTask(json);
 	}
 
 	@RequestMapping(value = "/task/dkms", method = RequestMethod.POST)
 	public boolean executeAllReceiveTask() throws ExceptionGeneratorActiviti {
 		return activiti.completeAllReiceiveTask(null);
 	}
+
 	@RequestMapping(value = "/task/dkms/gson", method = RequestMethod.POST)
 	public boolean executeAllReceiveTask(@RequestBody VariableActiviti vData) throws ExceptionGeneratorActiviti {
-		String json="{\"name\":\""+vData.getName()+"\", \"value\":\""+vData.getValue()+"\"}";
+		String json = "{\"name\":\"" + vData.getName() + "\", \"value\":\"" + vData.getValue() + "\"}";
 
 		return activiti.completeAllReiceiveTask(json);
 	}
 
-	/*C2net Process*/
+	/* C2net Process */
 	@RequestMapping(value = "/task/receive/gson", method = RequestMethod.POST)
 	public boolean executeReceiveTask(@RequestBody ReceiveTaskData rData) throws ExceptionGeneratorActiviti {
-		String processId=rData.getProcessId();
+		String processId = rData.getProcessId();
 		String receiveTaskId = rData.getTaskId();
-		String json="{\"name\":\""+rData.getName()+"\", \"value\":\""+rData.getValue()+"\"}";
+		String json = "{\"name\":\"" + rData.getName() + "\", \"value\":\"" + rData.getValue() + "\"}";
 		return activiti.completeReiceiveTask(processId, receiveTaskId, json);
 	}
 
-	/*All data*/
+	/* All data */
 	@RequestMapping(value = "/data", method = RequestMethod.GET)
 	public String allData() throws ExceptionGeneratorActiviti {
 		return activiti.dataReader();

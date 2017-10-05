@@ -140,8 +140,10 @@ public class ActivitiProcess {
 		return true;
 	}
 
-	public boolean completeReiceiveTask(String processId, String receiveTaskid, String json)
+	public boolean completeReiceiveTaskDKMS(String processId, String receiveTaskid, String json, String taskName)
 			throws ExceptionGeneratorActiviti {
+		boolean doReceiveTask = false;
+
 		try {
 			ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
 			RuntimeService runtimeService = processEngine.getRuntimeService();
@@ -151,7 +153,49 @@ public class ActivitiProcess {
 			if (execution == null) {
 				throw new ActivitiObjectNotFoundException("Unable to find the receiveTask");
 			}
+			if (json != null) {
+				try {
+					JSONObject jsonObj = new JSONObject(json);
+					VariableData vd = new VariableData(jsonObj.get("name").toString(), jsonObj.get("value").toString());
+					try {
+						double d = Double.parseDouble(vd.getValue());
+						if (d == Double.parseDouble(taskName)) {
+							doReceiveTask = true;
+							runtimeService.setVariableLocal(execution.getId(), vd.getName(), d);
+						}
+					} catch (NumberFormatException e) {
+						if (taskName.equals(vd.getValue())) {
+							doReceiveTask = true;
+							runtimeService.setVariableLocal(execution.getId(), vd.getName(), vd.getValue());
+						}
+					}
+				} catch (Exception e) {
+					new Exception("The json is malformed", e.getCause()).printStackTrace();
+				}
+			}
 
+			if (doReceiveTask)
+				runtimeService.signal(execution.getId());
+		} catch (ActivitiObjectNotFoundException e) {
+			throw new ExceptionGeneratorActiviti("Unable to find the ProcessId or ReceiveTaskId");
+		}
+
+		return doReceiveTask;
+	}
+
+	public boolean completeReiceiveTask(String processId, String receiveTaskid, String json)
+			throws ExceptionGeneratorActiviti {
+		boolean doReceiveTask = false;
+
+		try {
+			ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
+			RuntimeService runtimeService = processEngine.getRuntimeService();
+			Execution execution = runtimeService.createExecutionQuery().processInstanceId(processId)
+					.activityId(receiveTaskid).singleResult();
+
+			if (execution == null) {
+				throw new ActivitiObjectNotFoundException("Unable to find the receiveTask");
+			}
 			if (json != null) {
 				try {
 					JSONObject jsonObj = new JSONObject(json);
@@ -172,7 +216,7 @@ public class ActivitiProcess {
 			throw new ExceptionGeneratorActiviti("Unable to find the ProcessId or ReceiveTaskId");
 		}
 
-		return true;
+		return doReceiveTask;
 	}
 
 	public boolean completeAllReiceiveTask(String json) throws ExceptionGeneratorActiviti {
@@ -191,7 +235,9 @@ public class ActivitiProcess {
 			BpmnModel bpmnModel = repositoryService.getBpmnModel(processInstance.getProcessDefinitionId());
 			FlowElement flowElement = bpmnModel.getFlowElement(((DelegateExecution) execution).getCurrentActivityId());
 			if (flowElement instanceof ReceiveTask) {
-				completeReiceiveTask(data.getId(), data.getActivityId(), json);
+				String taskName = flowElement.getName();
+				//String taskId = data.getActivityId();
+				completeReiceiveTaskDKMS(data.getId(), data.getActivityId(), json, taskName);
 				taskComplete = true;
 			}
 		}
