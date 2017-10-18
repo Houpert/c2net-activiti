@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +45,7 @@ import com.google.gson.Gson;
 public class ActivitiProcess {
 
 	private final String MY_TASK_KEY = "taskId";
+	private final String PROCESS_DATA = "execute_Data";
 
 	public void optimisation() {
 	}
@@ -91,6 +93,16 @@ public class ActivitiProcess {
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 		ProcessInstance pi = runtimeService.startProcessInstanceByKey(id);
 
+		return pi.getId();
+	}
+
+	public String executeBpmn(String id, String data) {
+		ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
+		RuntimeService runtimeService = processEngine.getRuntimeService();
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put(PROCESS_DATA, data);
+
+		ProcessInstance pi = runtimeService.startProcessInstanceByKey(id, parameters);
 		return pi.getId();
 	}
 
@@ -172,7 +184,7 @@ public class ActivitiProcess {
 				} catch (Exception e) {
 					new Exception("The json is malformed", e.getCause()).printStackTrace();
 				}
-			}else{
+			} else {
 				doReceiveTask = true;
 			}
 

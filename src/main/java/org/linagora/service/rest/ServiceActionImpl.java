@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.linagora.activiti.ActivitiProcess;
+import org.linagora.dao.cnet.ProcessJson;
 import org.linagora.dao.cnet.ReceiveTaskData;
 import org.linagora.dao.cnet.UserEmail;
 import org.linagora.dao.cnet.VariableActiviti;
@@ -53,7 +54,20 @@ public class ServiceActionImpl implements ServiceAction {
 		return activiti.executeBpmn(nameProcess);
 	}
 
+	@RequestMapping(value = "/execute/json", method = RequestMethod.POST)
+	public String executeBpmn(@RequestParam("nameProcess") String nameProcess, @RequestParam("json") String data)
+			throws ExceptionGeneratorActiviti {
+		return activiti.executeBpmn(nameProcess, data);
+	}
+
 	/* C2NET Context */
+	@RequestMapping(value = "/execute/gson", method = RequestMethod.POST)
+	public String executeBpmn(@RequestParam("nameProcess") String nameProcess, @RequestBody ProcessJson vData)
+			throws ExceptionGeneratorActiviti {
+		String json = "{\"json\":\"" + vData.getJson()+"\"}";
+		return activiti.executeBpmn(nameProcess, json);
+	}
+
 	@RequestMapping(value = "/parse/orchestrate", method = RequestMethod.POST)
 	public String generateBpmn(@RequestBody WorkflowData workflowData) throws ExceptionGeneratorActiviti, IOException {
 		String xmlstring = workflowData.getXmlstring();
