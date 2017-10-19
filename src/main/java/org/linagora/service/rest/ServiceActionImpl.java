@@ -41,12 +41,12 @@ public class ServiceActionImpl implements ServiceAction {
 
 	@RequestMapping(value = "/parse/save", method = RequestMethod.POST)
 	public String saveBpmn(@RequestParam("file") MultipartFile file) throws ExceptionGeneratorActiviti {
-		return activiti.initBpmnIoToActiviti(file, false);
+		return activiti.initBpmnIoToActiviti(file, false, null);
 	}
 
 	@RequestMapping(value = "/parse/execute", method = RequestMethod.POST)
 	public String generateBpmn(@RequestParam("file") MultipartFile file) throws ExceptionGeneratorActiviti {
-		return activiti.initBpmnIoToActiviti(file, true);
+		return activiti.initBpmnIoToActiviti(file, true, null);
 	}
 
 	@RequestMapping(value = "/execute", method = RequestMethod.POST)
@@ -61,6 +61,12 @@ public class ServiceActionImpl implements ServiceAction {
 	}
 
 	/* C2NET Context */
+	@RequestMapping(value = "/parse/execute", method = RequestMethod.POST)
+	public String generateBpmn(@RequestParam("file") MultipartFile file, @RequestBody ProcessJson vData) throws ExceptionGeneratorActiviti {
+		String json = "{\"json\":\"" + vData.getJson()+"\"}";
+		return activiti.initBpmnIoToActiviti(file, true, json);
+	}
+
 	@RequestMapping(value = "/execute/gson", method = RequestMethod.POST)
 	public String executeBpmn(@RequestParam("nameProcess") String nameProcess, @RequestBody ProcessJson vData)
 			throws ExceptionGeneratorActiviti {
@@ -79,7 +85,22 @@ public class ServiceActionImpl implements ServiceAction {
 		bw.close();
 
 		MultipartFile file = getMockCommonsMultipartFile(temp);
-		return activiti.initBpmnIoToActiviti(file, true);
+		return activiti.initBpmnIoToActiviti(file, true, null);
+	}
+
+	@RequestMapping(value = "/parse/orchestrate", method = RequestMethod.POST)
+	public String generateBpmn(@RequestBody WorkflowData workflowData, @RequestBody ProcessJson vData) throws ExceptionGeneratorActiviti, IOException {
+		String xmlstring = workflowData.getXmlstring();
+		String filename = workflowData.getFilename();
+		String json = "{\"json\":\"" + vData.getJson()+"\"}";
+
+		File temp = new File(filename);
+		BufferedWriter bw = new BufferedWriter(new FileWriter(temp));
+		bw.write(xmlstring);
+		bw.close();
+
+		MultipartFile file = getMockCommonsMultipartFile(temp);
+		return activiti.initBpmnIoToActiviti(file, true, json);
 	}
 
 	private MultipartFile getMockCommonsMultipartFile(File file) throws IOException {

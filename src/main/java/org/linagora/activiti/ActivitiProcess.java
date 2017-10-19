@@ -50,7 +50,8 @@ public class ActivitiProcess {
 	public void optimisation() {
 	}
 
-	public String initBpmnIoToActiviti(MultipartFile file, boolean execute) throws ExceptionGeneratorActiviti {
+	public String initBpmnIoToActiviti(MultipartFile file, boolean execute, String json)
+			throws ExceptionGeneratorActiviti {
 		ActivitiDAO myActivitiFile = null;
 		try {
 			ActivitiParse myActivitiGenerator = new ActivitiParse();
@@ -65,7 +66,7 @@ public class ActivitiProcess {
 
 		try {
 			if (execute) {
-				String idNumber = saveAndExecute(myActivitiFile);
+				String idNumber = saveAndExecute(myActivitiFile, json);
 				myActivitiFile.setIdNumber(idNumber);
 			} else {
 				saveBpmn(myActivitiFile);
@@ -106,7 +107,7 @@ public class ActivitiProcess {
 		return pi.getId();
 	}
 
-	public String saveAndExecute(ActivitiDAO bpmn) throws FileNotFoundException {
+	public String saveAndExecute(ActivitiDAO bpmn, String json) throws FileNotFoundException {
 		ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
 
 		InputStream inputStream = new FileInputStream(bpmn.getFile());
@@ -117,7 +118,17 @@ public class ActivitiProcess {
 
 		// Start the processus
 		RuntimeService runtimeService = processEngine.getRuntimeService();
-		ProcessInstance pi = runtimeService.startProcessInstanceByKey(bpmn.getProcessId());
+
+		ProcessInstance pi = null;
+		if (json == null) {
+			Map<String, Object> parameters = new HashMap<String, Object>();
+			parameters.put(PROCESS_DATA, json);
+			pi = runtimeService.startProcessInstanceByKey(bpmn.getProcessId(), parameters);
+
+		} else {
+			pi = runtimeService.startProcessInstanceByKey(bpmn.getProcessId());
+		}
+
 		return pi.getId();
 	}
 
