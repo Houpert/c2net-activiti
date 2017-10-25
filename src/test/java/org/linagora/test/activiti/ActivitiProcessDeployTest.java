@@ -80,7 +80,7 @@ public class ActivitiProcessDeployTest {
 		try {
 			boolean isExecuted = false;
 			MultipartFile multipartFile = getMockCommonsMultipartFile(new File(xmlPathInput + bpmn_valid));
-			String myActivitiJson = aProcess.initBpmnIoToActiviti(multipartFile, isExecuted);
+			String myActivitiJson = aProcess.initBpmnIoToActiviti(multipartFile, isExecuted, null);
 
 			checkActivitiDao(myActivitiJson, bpmn_valid, isExecuted);
 		} catch (Exception e) {
@@ -94,7 +94,7 @@ public class ActivitiProcessDeployTest {
 			boolean isExecuted = true;
 
 			MultipartFile multipartFile = getMockCommonsMultipartFile(new File(xmlPathInput + bpmn_valid));
-			String myActivitiJson = aProcess.initBpmnIoToActiviti(multipartFile, isExecuted);
+			String myActivitiJson = aProcess.initBpmnIoToActiviti(multipartFile, isExecuted, null);
 			checkActivitiDao(myActivitiJson, bpmn_valid, isExecuted);
 		} catch (Exception e) {
 			Assert.fail();
@@ -108,7 +108,7 @@ public class ActivitiProcessDeployTest {
 			boolean isExecuted = true;
 
 			MultipartFile multipartFile = getMockCommonsMultipartFile(new File(xmlPathInput + bpmn_wrong_xml));
-			aProcess.initBpmnIoToActiviti(multipartFile, isExecuted);
+			aProcess.initBpmnIoToActiviti(multipartFile, isExecuted, null);
 			Assert.fail();
 		} catch (Exception e) {
 			Assert.assertTrue(e.toString().contains("javax.xml.transform.TransformerException"));
@@ -121,7 +121,7 @@ public class ActivitiProcessDeployTest {
 			boolean isExecuted = true;
 
 			MultipartFile multipartFile = getMockCommonsMultipartFile(new File(xmlPathInput + no_xml_file));
-			aProcess.initBpmnIoToActiviti(multipartFile, isExecuted);
+			aProcess.initBpmnIoToActiviti(multipartFile, isExecuted, null);
 			Assert.fail();
 		} catch (Exception e) {
 			Assert.assertTrue(e.toString().contains("javax.xml.transform.TransformerException"));
@@ -134,7 +134,7 @@ public class ActivitiProcessDeployTest {
 			boolean isExecuted = true;
 
 			MultipartFile multipartFile = getMockCommonsMultipartFile(new File(xmlPathInput + bpmn_error_wrong_id));
-			aProcess.initBpmnIoToActiviti(multipartFile, isExecuted);
+			aProcess.initBpmnIoToActiviti(multipartFile, isExecuted, null);
 			Assert.fail();
 		} catch (Exception e) {
 			Assert.assertTrue(e.toString().contains("no processes deployed with key"));
@@ -147,7 +147,7 @@ public class ActivitiProcessDeployTest {
 			boolean isExecuted = true;
 
 			MultipartFile multipartFile = getMockCommonsMultipartFile(new File(xmlPathInput + bpmn_no_executable));
-			aProcess.initBpmnIoToActiviti(multipartFile, isExecuted);
+			aProcess.initBpmnIoToActiviti(multipartFile, isExecuted, null);
 			Assert.fail();
 		} catch (Exception e) {
 			Assert.assertTrue(e.toString().contains("activiti-process-definition-not-executable"));
@@ -169,7 +169,7 @@ public class ActivitiProcessDeployTest {
 	public void saveAndExecute_NoParsedValidXMml_ProcessIsDeploy() throws ExceptionGeneratorActiviti, IOException {
 		try {
 			String processId = aProcess
-					.saveAndExecute(new ActivitiDAO("test_bpmn_valid", new File(xmlPathInput + bpmn_valid)));
+					.saveAndExecute(new ActivitiDAO("test_bpmn_valid", new File(xmlPathInput + bpmn_valid)), null);
 			Assert.assertNotNull(processId);
 		} catch (Exception e) {
 			Assert.fail();

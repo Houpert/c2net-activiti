@@ -120,11 +120,10 @@ public class ActivitiProcess {
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 
 		ProcessInstance pi = null;
-		if (json == null) {
+		if (json != null) {
 			Map<String, Object> parameters = new HashMap<String, Object>();
 			parameters.put(PROCESS_DATA, json);
 			pi = runtimeService.startProcessInstanceByKey(bpmn.getProcessId(), parameters);
-
 		} else {
 			pi = runtimeService.startProcessInstanceByKey(bpmn.getProcessId());
 		}

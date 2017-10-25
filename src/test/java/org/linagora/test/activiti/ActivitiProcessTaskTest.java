@@ -111,7 +111,7 @@ public class ActivitiProcessTaskTest {
 			throws ExceptionGeneratorActiviti, IOException {
 		try {
 			MultipartFile multipartFile = getMockCommonsMultipartFile(new File(xmlPathInput + form_string_bpmn));
-			aProcess.initBpmnIoToActiviti(multipartFile, isExecuted);
+			aProcess.initBpmnIoToActiviti(multipartFile, isExecuted, null);
 
 			String jsonListTask = aProcess.listTask(testUser);
 			Assert.assertNotNull(jsonListTask);
@@ -132,7 +132,7 @@ public class ActivitiProcessTaskTest {
 			throws ExceptionGeneratorActiviti, IOException {
 		try {
 			MultipartFile multipartFile = getMockCommonsMultipartFile(new File(xmlPathInput + form_number_bpmn));
-			aProcess.initBpmnIoToActiviti(multipartFile, isExecuted);
+			aProcess.initBpmnIoToActiviti(multipartFile, isExecuted, null);
 
 			String jsonListTask = aProcess.listTask(testUser);
 			Assert.assertNotNull(jsonListTask);
@@ -152,7 +152,7 @@ public class ActivitiProcessTaskTest {
 	public void listTask_checkMailList_FilterOkAndExecute() throws ExceptionGeneratorActiviti, IOException {
 		try {
 			MultipartFile multipartFile = getMockCommonsMultipartFile(new File(xmlPathInput + form_userMail_bpmn));
-			aProcess.initBpmnIoToActiviti(multipartFile, isExecuted);
+			aProcess.initBpmnIoToActiviti(multipartFile, isExecuted, null);
 
 			String jsonListTask = aProcess.listTask(testUser);
 			Assert.assertNotNull(jsonListTask);
@@ -178,7 +178,7 @@ public class ActivitiProcessTaskTest {
 	public void completeReiceiveTask_executeGateway_wayOne() throws ExceptionGeneratorActiviti, IOException {
 		try {
 			MultipartFile multipartFile = getMockCommonsMultipartFile(new File(xmlPathInput + form_gateway_bpmn));
-			aProcess.initBpmnIoToActiviti(multipartFile, isExecuted);
+			aProcess.initBpmnIoToActiviti(multipartFile, isExecuted, null);
 			String jsonList = aProcess.dataReader();
 			JSONArray jsonarray = new JSONArray(jsonList);
 			Assert.assertEquals(1, jsonarray.length());
@@ -204,7 +204,7 @@ public class ActivitiProcessTaskTest {
 	public void completeReiceiveTask_executeGateway_wayTwo() throws ExceptionGeneratorActiviti, IOException {
 		try {
 			MultipartFile multipartFile = getMockCommonsMultipartFile(new File(xmlPathInput + form_gateway_bpmn));
-			aProcess.initBpmnIoToActiviti(multipartFile, isExecuted);
+			aProcess.initBpmnIoToActiviti(multipartFile, isExecuted, null);
 			String jsonList = aProcess.dataReader();
 			JSONArray jsonarray = new JSONArray(jsonList);
 			Assert.assertEquals(1, jsonarray.length());
@@ -225,7 +225,7 @@ public class ActivitiProcessTaskTest {
 	public void completeReiceiveTask_dmksExecution_DKMSDone() throws ExceptionGeneratorActiviti, IOException {
 		try {
 			MultipartFile multipartFile = getMockCommonsMultipartFile(new File(xmlPathInput + form_dkms_bpmn));
-			aProcess.initBpmnIoToActiviti(multipartFile, isExecuted);
+			aProcess.initBpmnIoToActiviti(multipartFile, isExecuted, null);
 			String jsonList = aProcess.dataReader();
 			JSONArray jsonarray = new JSONArray(jsonList);
 			Assert.assertEquals(1, jsonarray.length());

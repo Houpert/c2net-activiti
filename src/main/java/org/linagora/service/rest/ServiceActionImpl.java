@@ -13,6 +13,7 @@ import org.linagora.dao.cnet.ReceiveTaskData;
 import org.linagora.dao.cnet.UserEmail;
 import org.linagora.dao.cnet.VariableActiviti;
 import org.linagora.dao.cnet.WorkflowData;
+import org.linagora.dao.cnet.WorkflowDataJson;
 import org.linagora.exception.ExceptionGeneratorActiviti;
 import org.linagora.service.api.ServiceAction;
 import org.springframework.mock.web.MockMultipartFile;
@@ -54,24 +55,11 @@ public class ServiceActionImpl implements ServiceAction {
 		return activiti.executeBpmn(nameProcess);
 	}
 
-	@RequestMapping(value = "/execute/json", method = RequestMethod.POST)
-	public String executeBpmn(@RequestParam("nameProcess") String nameProcess, @RequestParam("json") String data)
-			throws ExceptionGeneratorActiviti {
-		return activiti.executeBpmn(nameProcess, data);
-	}
-
 	/* C2NET Context */
-	@RequestMapping(value = "/parse/execute", method = RequestMethod.POST)
+	@RequestMapping(value = "/parse/execute/gson", method = RequestMethod.POST)
 	public String generateBpmn(@RequestParam("file") MultipartFile file, @RequestBody ProcessJson vData) throws ExceptionGeneratorActiviti {
 		String json = "{\"json\":\"" + vData.getJson()+"\"}";
 		return activiti.initBpmnIoToActiviti(file, true, json);
-	}
-
-	@RequestMapping(value = "/execute/gson", method = RequestMethod.POST)
-	public String executeBpmn(@RequestParam("nameProcess") String nameProcess, @RequestBody ProcessJson vData)
-			throws ExceptionGeneratorActiviti {
-		String json = "{\"json\":\"" + vData.getJson()+"\"}";
-		return activiti.executeBpmn(nameProcess, json);
 	}
 
 	@RequestMapping(value = "/parse/orchestrate", method = RequestMethod.POST)
@@ -88,11 +76,11 @@ public class ServiceActionImpl implements ServiceAction {
 		return activiti.initBpmnIoToActiviti(file, true, null);
 	}
 
-	@RequestMapping(value = "/parse/orchestrate", method = RequestMethod.POST)
-	public String generateBpmn(@RequestBody WorkflowData workflowData, @RequestBody ProcessJson vData) throws ExceptionGeneratorActiviti, IOException {
+	@RequestMapping(value = "/parse/orchestrate/gson", method = RequestMethod.POST)
+	public String generateBpmn(@RequestBody WorkflowDataJson workflowData) throws ExceptionGeneratorActiviti, IOException {
 		String xmlstring = workflowData.getXmlstring();
 		String filename = workflowData.getFilename();
-		String json = "{\"json\":\"" + vData.getJson()+"\"}";
+		String data = workflowData.getData();
 
 		File temp = new File(filename);
 		BufferedWriter bw = new BufferedWriter(new FileWriter(temp));
@@ -100,7 +88,7 @@ public class ServiceActionImpl implements ServiceAction {
 		bw.close();
 
 		MultipartFile file = getMockCommonsMultipartFile(temp);
-		return activiti.initBpmnIoToActiviti(file, true, json);
+		return activiti.initBpmnIoToActiviti(file, true, data);
 	}
 
 	private MultipartFile getMockCommonsMultipartFile(File file) throws IOException {
